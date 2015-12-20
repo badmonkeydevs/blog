@@ -1,3 +1,8 @@
 @import 'bootstrap-sprockets';
 @import 'bootstrap';
 @import 'application/navigation';
+
+body {
+  height: 100vh;
+  background-color: #dddddd;
+}
