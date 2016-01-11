@@ -1,0 +1,458 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Hey, Do You Even PORO? - Bad Monkey Press</title>
+  <meta name="author" content="Michael Kelly">
+
+  
+  <meta name="description" content="Introduces POR objects and demonstrates the surprising benefits of NOT
+using ActiveRecord objects First Things First I know it&rsquo;s been a couple &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://blog.badmonkeys.io/blog/2015/07/17/hey-do-you-even-poro/">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/atom.xml" rel="alternate" title="Bad Monkey Press" type="application/atom+xml">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="/javascripts/libs/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+        })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-71890797-1', 'auto');
+    ga('send', 'pageview');
+
+  </script>
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="//fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="//fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">Bad Monkey Press</a></h1>
+  
+    <h2>The Bad Monkey view on startups, SaaS, and web engineering</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="https://www.google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="sitesearch" value="blog.badmonkeys.io">
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">Hey, Do You Even PORO?</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2015-07-17'><span class='date'><span class='date-month'>Jul</span> <span class='date-day'>17</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span> <span class='time'>12:00 am</span></time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>Introduces POR objects and demonstrates the surprising benefits of NOT
+using ActiveRecord objects</p>
+
+<!-- more -->
+
+
+<h2>First Things First</h2>
+
+<p>I know it&rsquo;s been a couple of weeks since my last post and I owe you an
+apology. I&rsquo;ve been head-down working on coming up to speed over at
+<a href="http://monsieur.co/">Monsieur</a> in the <a href="http://atdc.org/">ATDC</a>. It&rsquo;s a
+really cool space with excellent growth potential. I&rsquo;m taking over an
+pretty well written MVP architecture and will be working hard in the
+coming months to take it to true production quality. I&rsquo;ve only been at
+it for just a couple of weeks now and I&rsquo;m getting really excited to see
+where this product will go.  Right now we&rsquo;re also on the hunt for
+another <a href="http://monsieur.co/careers/">Senior Web Engineer</a> to help me
+out in this effort.  Come check us out!</p>
+
+<p>While I&rsquo;m digging into new code, designing for growth and scale, and
+forging new ground with this code base, I thought it&rsquo;d be a good idea to
+share some of my thoughts on code design. Now I&rsquo;m I know what you&rsquo;re
+thinking &ldquo;Michael, what happened to the next post in the <a
+href="https://badmonkeydev.wordpress.com/2015/06/04/how-to-build-your-own-ruby-gem-from-start-to-finish/">How
+to Build Your Own Gem series</a>? Well don&rsquo;t worry, I&rsquo;m still working on
+that, I just haven&rsquo;t had much time to work on
+<a href="https://github.com/michaelkelly322/sidekiq-workflow">sidekiq-workflow</a>
+recently. You&rsquo;ll see more on that soon.</p>
+
+<p>What I want to share today is a pattern I use quiet often when
+refactoring and designing Rails apps. It&rsquo;s very useful for creating
+writable, readable, and highly modularized code. It&rsquo;s also a great means
+of introducing domain abstraction into your app which will only reveal
+more patterns and abstractions that will help the app grow and expand
+gracefully.</p>
+
+<h2>POR Objects</h2>
+
+<p>So it happens sometimes when rails apps grow that a model takes on too
+much responsibility. The file is hundreds of lines long, you see methods
+like <code>reset_spend_cap</code> and <code>set_spend_cap</code>, and new developers have
+absolutely no idea where to find the code they need. One of the things
+to remember in this situation is that just because we&rsquo;re writing a rails
+app, doesn&rsquo;t mean we HAVE to use ActiveRecord for all of our objects.
+Plain Old Ruby(POR) objects work <em>GREAT</em> for encapsulating modular code
+and shrinking those ginormous models.</p>
+
+<p>To get started let&rsquo;s look at the examples I listed in the last
+paragraph. Imagine we have a model file that looks like this:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">class</span> <span class="nc">Account</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
+</span><span class='line'>  <span class="c1"># Hundreds of lines of CRUFT</span>
+</span><span class='line'>  <span class="c1"># .</span>
+</span><span class='line'>  <span class="c1"># .</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">reset_spend_cap</span>
+</span><span class='line'>    <span class="c1"># stuff</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">set_spend_cap</span>
+</span><span class='line'>    <span class="c1"># stuff</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="c1"># Maybe even hundreds more!!</span>
+</span><span class='line'>  <span class="c1"># .</span>
+</span><span class='line'>  <span class="c1"># .</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Without even knowing what these two methods do we can see that they
+share something in common. They both deal with something called a &ldquo;Spend
+Cap.&rdquo; This is a concept in the Facebook Marketing API, but could just as
+easily be connected to any environment&rsquo;s domain specific functionality.
+Now imagine that Facebook decides to add a whole lot more functionality
+to their SpendCap model&hellip;what do we do? (*Hint: if you say &ldquo;write the
+methods in the Account model!&rdquo; I&rsquo;m going to find you
+and&hellip;ahem&hellip;<a href="http://izquotes.com/quote/299176">explain things</a> to you)</p>
+
+<p>We make a Plain Old Ruby object of course!! Take all those new methods
+you&rsquo;ll have to write and move them to their own class like this:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="c1"># app/models/spend_cap.rb</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">class</span> <span class="nc">SpendCap</span>
+</span><span class='line'>  <span class="kp">attr_accessor</span> <span class="ss">:account</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">initialize</span><span class="p">(</span><span class="n">account</span><span class="p">)</span>
+</span><span class='line'>    <span class="nb">self</span><span class="o">.</span><span class="n">account</span> <span class="o">=</span> <span class="n">account</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">reset</span>
+</span><span class='line'>    <span class="c1"># stuff, now using the instance variable :account</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">set</span>
+</span><span class='line'>    <span class="c1"># stuff, now using the instance variable :account</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Yup! It&rsquo;s that easy to create POR objects and house them in Rails. Just
+put them in the <code>models</code> directory and <em>DON&rsquo;T</em> inherit the class from
+<code>ActiveRecord::Base</code>. Plus, now when we want reset a spend cap we can
+write the following which is much more readable in terms of the &ldquo;What
+the f*^@ is going on here&rdquo; perspective:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">account</span> <span class="o">=</span> <span class="no">Account</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="n">params</span><span class="o">[</span><span class="ss">:id</span><span class="o">]</span><span class="p">)</span>
+</span><span class='line'><span class="no">SpendCap</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">account</span><span class="p">)</span><span class="o">.</span><span class="n">reset</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>This is mostly clean code and it gives us a really convenient place to
+put business logic and new features related to the SpendCap
+functionality. I say &ldquo;mostly clean&rdquo; because I don&rsquo;t really like the look
+of <code>SpendCap.new(account).reset</code> and I <em>REALLY</em> hate typing it. The
+<code>new</code> method chained in there makes it difficult to read clearly and
+we&rsquo;re not really creating something new (except the object in memory,
+but in the context of our app, we want to work with code that is
+syntactically similar to our business domain). But don&rsquo;t worry, I&rsquo;ve got
+a simple trick up my sleeve that has worked great for me.</p>
+
+<h2>A Nifty Initializer</h2>
+
+<p>I mentioned earlier that the constant use of <code>new</code> to pass context
+information to a ruby helper object is a little misleading and
+cumbersome, plus you end up typing <code>.new(account)</code> six billion times
+each day. I&rsquo;ve found that by switching the mental model from &ldquo;A new
+SpendCap Model with account&rdquo;, it is helpful to think like an array of
+SpendCaps and say &ldquo;The SpendCap for this account&rdquo;. And an implementation
+that supports this change looks like this:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="no">SpendCap</span><span class="o">[</span><span class="n">account</span><span class="o">].</span><span class="n">reset</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>which in ruby can be easily implemented by adding one extra method to
+our SpendCap class:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="c1"># app/models/spend_cap.rb</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">class</span> <span class="nc">SpendCap</span>
+</span><span class='line'>  <span class="kp">attr_accessor</span> <span class="ss">:account</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">def</span> <span class="nc">self</span><span class="o">.</span><span class="nf">[]</span><span class="p">(</span><span class="n">account</span><span class="p">)</span>
+</span><span class='line'>    <span class="nb">self</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">account</span><span class="p">)</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">initialize</span><span class="p">(</span><span class="n">account</span><span class="p">)</span>
+</span><span class='line'>    <span class="nb">self</span><span class="o">.</span><span class="n">account</span> <span class="o">=</span> <span class="n">account</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">reset</span>
+</span><span class='line'>    <span class="c1"># stuff, now using the instance variable :account</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">set</span>
+</span><span class='line'>    <span class="c1"># stuff, now using the instance variable :account</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>The method signature <code>def self.[](account)</code> creates a class method &ldquo;[]&rdquo;
+that accepts a parameter. This way when we&rsquo;re writing against our helper
+object, we can think of the object in a more efficient way, we reduce
+the overall characters needed, and it just plain looks cleaner to me.</p>
+
+<h2>Conclusion</h2>
+
+<p>Plain old ruby objects are an extremely powerful way to encapsulate
+similar functionality and to introduce some domain abstraction into your
+application. It also has the added benefit of tying pieces of code to
+terms and concepts used in the problem domain so new developers will
+learn things like Facebook&rsquo;s SpendCap and immediately have the
+information necessary to look directly at the functionality that
+supports it.  <em>BONUS</em> They&rsquo;re super easy to use and should be in every
+Rails engineer&rsquo;s toolbox.</p>
+
+<p>The new initializer pattern I introduced is a clean way of working with
+these objects and makes working with them downright enjoyable. I highly
+recommend that the next time you&rsquo;re facing down a monolithic rails
+model, take a look at how you may be able to abstract some of the mess
+away into helper objects.</p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">Michael Kelly</span></span>
+
+      
+
+
+
+
+<time class='entry-date' datetime='2015-07-17'><span class='date'><span class='date-month'>Jul</span> <span class='date-day'>17</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span> <span class='time'>12:00 am</span></time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/rails/'>rails</a>, <a class='category' href='/blog/categories/refactoring/'>refactoring</a>, <a class='category' href='/blog/categories/ruby/'>ruby</a>, <a class='category' href='/blog/categories/software-engineering/'>software engineering</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="//twitter.com/share" class="twitter-share-button" data-url="http://blog.badmonkeys.io/blog/2015/07/17/hey-do-you-even-poro/" data-via="" data-counturl="http://blog.badmonkeys.io/blog/2015/07/17/hey-do-you-even-poro/" >Tweet</a>
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2015/06/09/how-to-build-your-own-rails-gem-part-1/" title="Previous Post: How to build your own Rails Gem: Part 1 - The Gem">&laquo; How to build your own Rails Gem: Part 1 - The Gem</a>
+      
+      
+        <a class="basic-alignment right" href="/blog/2016/01/02/setting-up-badmonkeypress-for-heroku/" title="Next Post: Welcome to the Bad Monkey Presses!">Welcome to the Bad Monkey Presses! &raquo;</a>
+      
+    </p>
+  </footer>
+</article>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2016/01/03/model-less-controllers-in-ruby-on-rails/">Model-less Controllers in Ruby on Rails</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2016/01/02/setting-up-badmonkeypress-for-heroku/">Welcome to the Bad Monkey Presses!</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/07/17/hey-do-you-even-poro/">Hey, Do You Even PORO?</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/06/09/how-to-build-your-own-rails-gem-part-1/">How to Build Your Own Rails Gem: Part 1 - the Gem</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/06/04/how-to-build-your-own-rails-gem/">How to Build Your Own Rails Gem: Start to Finish</a>
+      </li>
+    
+  </ul>
+</section>
+
+
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2016 - Michael Kelly -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = '//platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

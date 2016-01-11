@@ -1,0 +1,609 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>How to Build Your Own Rails Gem: Part 1 - the Gem - Bad Monkey Press</title>
+  <meta name="author" content="Michael Kelly">
+
+  
+  <meta name="description" content="A walkthrough of the process of creating a basic gem structure and gem
+development workflow. Creating a Basic Gem and Setting Up Github This week we& &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://blog.badmonkeys.io/blog/2015/06/09/how-to-build-your-own-rails-gem-part-1/">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/atom.xml" rel="alternate" title="Bad Monkey Press" type="application/atom+xml">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="/javascripts/libs/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+        })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-71890797-1', 'auto');
+    ga('send', 'pageview');
+
+  </script>
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="//fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="//fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">Bad Monkey Press</a></h1>
+  
+    <h2>The Bad Monkey view on startups, SaaS, and web engineering</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="https://www.google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="sitesearch" value="blog.badmonkeys.io">
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">How to Build Your Own Rails Gem: Part 1 - the Gem</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2015-06-09'><span class='date'><span class='date-month'>Jun</span> <span class='date-day'>9</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span> <span class='time'>12:00 am</span></time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>A walkthrough of  the process of creating a basic gem structure and gem
+development workflow.</p>
+
+<!-- more -->
+
+
+<h2>Creating a Basic Gem and Setting Up Github</h2>
+
+<p>This week we&rsquo;re going to get our project setup and create our basic
+skeleton which will act as the foundation of sidekiq-workflow. This is
+probably going to be a long post, but you are welcome to skip any
+sections with which you&rsquo;re familiar.</p>
+
+<h2>Let&rsquo;s Get Started</h2>
+
+<ul>
+<li><a href="#skeleton">The Generator and Gem Skeleton</a></li>
+<li><a href="#gemspec">The Gemspec</a></li>
+<li><a href="#module">The Workflow Module</a></li>
+<li><a href="#source-control">Getting the Gem Into Source Control</a></li>
+<li><a href="#rubygems">Deploying the Gem to RubyGems</a></li>
+<li><a href="#conclusion">Conclusion</a></li>
+</ul>
+
+
+<p><a name="skeleton"></a></p>
+
+<h3>The Generator and Gem Skeleton</h3>
+
+<p>Bundler is the gold standard for gem packaging and management. If you&rsquo;ve
+done any rails development (and I sincerely hope you have, it&rsquo;s great
+fun!) you&rsquo;re familiar with the project&rsquo;s <code>Gemfile</code> which is used by
+bundler when it installs dependencies. Luckily for us, it also includes
+a generator for a skeleton gem. The generator has some special magic
+sauce based on your gem&rsquo;s name. You can find a full reference on <a href="http://guides.rubygems.org/name-your-gem/">How to
+Name Your Gem</a> over in the
+RubyGems guides. In our case, I&rsquo;m using <code>sidekiq-workflow</code> because the
+<code>-</code> between <code>sidekiq</code> and <code>workflow</code> indicates that <code>sidekiq</code> is the
+name of my top level module and <code>workflow</code> is a sub-module. With this I
+can write syntax like:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="c1"># run a workflow with parameters</span>
+</span><span class='line'><span class="no">Sidekiq</span><span class="o">::</span><span class="no">Workflow</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">workflow_definition</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1"># or include sub-classes like this later</span>
+</span><span class='line'><span class="no">Sidekiq</span><span class="o">::</span><span class="no">Workflow</span><span class="o">::</span><span class="no">Monitor</span><span class="o">.</span><span class="n">new</span><span class="p">()</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>This keeps our gem in the same namespace as Sidekiq itself and makes for
+a rather clean gem API. The generator command looks like this:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>bundle gem sidekiq-workflow
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Bundler will create a folder in the current directory named
+<code>sidekiq-workflow</code> and then generate all the necessary gem files within
+it. You should see output similar to:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>Code of conduct enabled in config
+</span><span class='line'>MIT License enabled in config
+</span><span class='line'>create sidekiq-workflow/Gemfile
+</span><span class='line'>create sidekiq-workflow/.gitignore
+</span><span class='line'>create sidekiq-workflow/lib/sidekiq/workflow.rb
+</span><span class='line'>create sidekiq-workflow/lib/sidekiq/workflow/version.rb
+</span><span class='line'>create sidekiq-workflow/sidekiq-workflow.gemspec
+</span><span class='line'>create sidekiq-workflow/Rakefile
+</span><span class='line'>create sidekiq-workflow/README.md
+</span><span class='line'>create sidekiq-workflow/bin/console
+</span><span class='line'>create sidekiq-workflow/bin/setup
+</span><span class='line'>create sidekiq-workflow/CODE_OF_CONDUCT.md
+</span><span class='line'>create sidekiq-workflow/LICENSE.txt
+</span><span class='line'>create sidekiq-workflow/.travis.yml
+</span><span class='line'>create sidekiq-workflow/.rspec
+</span><span class='line'>create sidekiq-workflow/spec/spec_helper.rb
+</span><span class='line'>create sidekiq-workflow/spec/sidekiq/workflow_spec.rb
+</span><span class='line'>Initializing git repo in /home/michael/Data/gems/sidekiq-workflow
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>You can see from the output that this command has generated a lot of
+files for your gem. Most of these are standard like <code>.gitignore</code>,
+<code>README.md</code>, <code>LICENSE.txt</code>, familiar rspec testing setup, etc. However,
+when it comes to the actual gem files, there are two that are the most
+important. They are <code>sidekiq-workflow.gemspec</code> and
+<code>lib/sidekiq/workflow.rb</code>. I&rsquo;ll discuss both in detail below.</p>
+
+<p><a name="gemspec"></a></p>
+
+<h4>The Gemspec</h4>
+
+<p>The <code>gemspec</code> file is the main location for the configuration of our
+gem&rsquo;s metadata. This is where we set fancy things like our gem name,
+version, summary/description, gem dependecies, etc. The <code>gemspec</code> file
+for sidekiq-workflow looks like this:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="c1"># coding: utf-8</span>
+</span><span class='line'><span class="n">lib</span> <span class="o">=</span> <span class="no">File</span><span class="o">.</span><span class="n">expand_path</span><span class="p">(</span><span class="s1">&#39;../lib&#39;</span><span class="p">,</span> <span class="bp">__FILE__</span><span class="p">)</span>
+</span><span class='line'><span class="vg">$LOAD_PATH</span><span class="o">.</span><span class="n">unshift</span><span class="p">(</span><span class="n">lib</span><span class="p">)</span> <span class="k">unless</span> <span class="vg">$LOAD_PATH</span><span class="o">.</span><span class="n">include?</span><span class="p">(</span><span class="n">lib</span><span class="p">)</span>
+</span><span class='line'><span class="nb">require</span> <span class="s1">&#39;sidekiq/workflow/version&#39;</span>
+</span><span class='line'>
+</span><span class='line'><span class="no">Gem</span><span class="o">::</span><span class="no">Specification</span><span class="o">.</span><span class="n">new</span> <span class="k">do</span> <span class="o">|</span><span class="n">spec</span><span class="o">|</span>
+</span><span class='line'>  <span class="n">spec</span><span class="o">.</span><span class="n">name</span>          <span class="o">=</span> <span class="s1">&#39;sidekiq-workflow&#39;</span>
+</span><span class='line'>  <span class="n">spec</span><span class="o">.</span><span class="n">version</span>       <span class="o">=</span> <span class="no">Sidekiq</span><span class="o">::</span><span class="no">Workflow</span><span class="o">::</span><span class="no">VERSION</span>
+</span><span class='line'>  <span class="n">spec</span><span class="o">.</span><span class="n">authors</span>       <span class="o">=</span> <span class="o">[</span><span class="s1">&#39;Michael Kelly&#39;</span><span class="o">]</span>
+</span><span class='line'>  <span class="n">spec</span><span class="o">.</span><span class="n">email</span>         <span class="o">=</span> <span class="o">[</span><span class="s1">&#39;michaelkelly322@gmail.com&#39;</span><span class="o">]</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="n">spec</span><span class="o">.</span><span class="n">summary</span>       <span class="o">=</span> <span class="s1">&#39;Complex workflow management in</span>
+</span><span class='line'><span class="s1">Sidekiq&#39;</span>
+</span><span class='line'>  <span class="n">spec</span><span class="o">.</span><span class="n">description</span>   <span class="o">=</span> <span class="s1">&#39;Allows the execution of mixed parallel and</span>
+</span><span class='line'><span class="s1">sequential workflows.  A workflow can be defined at runtime and executed</span>
+</span><span class='line'><span class="s1">with full sidekiq integration.&#39;</span>
+</span><span class='line'>  <span class="n">spec</span><span class="o">.</span><span class="n">homepage</span>      <span class="o">=</span>
+</span><span class='line'><span class="s1">&#39;https://github.com/michaelkelly322/sidekiq-workflow&#39;</span>
+</span><span class='line'>  <span class="n">spec</span><span class="o">.</span><span class="n">license</span>       <span class="o">=</span> <span class="s1">&#39;MIT&#39;</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="n">spec</span><span class="o">.</span><span class="n">files</span>         <span class="o">=</span> <span class="sb">`git ls-files -z`</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;\x0&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">reject</span> <span class="p">{</span>
+</span><span class='line'><span class="o">|</span><span class="n">f</span><span class="o">|</span> <span class="n">f</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="sr">%r{^(test|spec|features)/}</span><span class="p">)</span> <span class="p">}</span>
+</span><span class='line'>  <span class="n">spec</span><span class="o">.</span><span class="n">bindir</span>        <span class="o">=</span> <span class="s1">&#39;exe&#39;</span>
+</span><span class='line'>  <span class="n">spec</span><span class="o">.</span><span class="n">executables</span>   <span class="o">=</span> <span class="n">spec</span><span class="o">.</span><span class="n">files</span><span class="o">.</span><span class="n">grep</span><span class="p">(</span><span class="sr">%r{^exe/}</span><span class="p">)</span> <span class="p">{</span> <span class="o">|</span><span class="n">f</span><span class="o">|</span> <span class="no">File</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>  <span class="n">spec</span><span class="o">.</span><span class="n">require_paths</span> <span class="o">=</span> <span class="o">[</span><span class="s1">&#39;lib&#39;</span><span class="o">]</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="n">spec</span><span class="o">.</span><span class="n">required_ruby_version</span> <span class="o">=</span> <span class="s1">&#39;1.9&#39;</span>
+</span><span class='line'>  <span class="n">spec</span><span class="o">.</span><span class="n">add_development_dependency</span> <span class="s1">&#39;bundler&#39;</span><span class="p">,</span> <span class="s1">&#39;~&lt;</span>
+</span><span class='line'><span class="s1">1.10&#39;</span>
+</span><span class='line'>  <span class="n">spec</span><span class="o">.</span><span class="n">add_development_dependency</span> <span class="s1">&#39;rake&#39;</span><span class="p">,</span> <span class="s1">&#39;~&lt;</span>
+</span><span class='line'><span class="s1">10.0&#39;</span>
+</span><span class='line'>  <span class="n">spec</span><span class="o">.</span><span class="n">add_development_dependency</span> <span class="s1">&#39;rspec&#39;</span><span class="p">,</span> <span class="s1">&#39;~&lt;</span>
+</span><span class='line'><span class="s1">3.2&#39;</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>There&rsquo;s a lot of boiler plate there that we don&rsquo;t really have the screen
+space to explore in this tutorial (I plan on posting a dedicated post on
+the elements of a <code>gemspec</code> file in the near future). The default
+configuration is pretty good for now (except of course the things that
+are custom to our gem like name and description). What is important to
+note is that it is extremely bad form to use the <code>Gemfile</code> in our gem to
+manage dependecies. Instead, we use the <code>gemspec</code> file instead. Notice
+the section that starts with the line <code>spec.add_development_dependency
+"bundler", "~&gt; 1.10"</code>? This adds a development dependency on bundler.
+Development dependencies are gems that are used during the development
+of our gem, but not to be included in the actual packaged gem (things
+like testing, building, etc.). To add runtime dependencies you would use
+<code>spec.add_runtime_dependency 'gem_name', '1.2.3'</code> which tells the spec
+that the gem is to be included as a dependency when the gem is packaged
+for release (meaning our users will need to have these gems to run
+ours).</p>
+
+<p>This structure is similar to groups in a standard <code>Gemfile</code>. However,
+the <code>Gemfile</code> itself will be used by our users when installing
+dependencies and their configuration has to be passed through the gem
+packaging process to be setup properly. That is why we include them in
+the <code>gemspec</code> and not directly in the <code>Gemfile</code>.
+<a name="module"></a></p>
+
+<h4>The Workflow Module</h4>
+
+<p>The other major file involved with gem development is the gem&rsquo;s main
+module file. It can be found in the <code>lib/</code> parent folder that bundler
+created. In our case, it is located at <code>lib/sidekiq/workflow.rb</code> and if
+you haven&rsquo;t modified it yet should look like:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="nb">require</span> <span class="s1">&#39;sidekiq/workflow/version&#39;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">module</span> <span class="nn">Sidekiq</span>
+</span><span class='line'>  <span class="k">module</span> <span class="nn">Workflow</span>
+</span><span class='line'>    <span class="c1"># Your code goes here...</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>This is essentially the entry point of your gem. Remember earlier when I
+talked about syntax like <code>Sidekiq::Workflow.run()</code>? Well here&rsquo;s where
+we&rsquo;d implement a run method, but more on that in a later post ;)</p>
+
+<p><a name="source-control"></a></p>
+
+<h3>Getting the Gem Into Source Control</h3>
+
+<p>Before we commit any of our code above, we need to make one modification
+to our <code>.gitignore</code> file</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="o">*.</span><span class="n">gem</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>This way we don&rsquo;t commit our actual bundled gem after we&rsquo;ve built it for
+deployment to RubyGems. A flaw in the generator in my opinion because
+the standard practice is to bundle the gem from within your projects
+directory. Therefore, we shouldn&rsquo;t be committing specific (read
+versioned) <code>.gem</code> files. The default should be to exclude them.</p>
+
+<p>I also like to start my gem development with an obviously not
+production-ready version. Bundler&rsquo;s generator initialized a file called
+<code>lib/sidekiq/workflow/version.rb</code>. If you noticed above, our <code>gemspec</code>
+file references this files module when setting the gem version (makes it
+easier to script bumping the version number. The default version is
+<code>0.1.0</code>. But based on my experience with semantic versioning, it is best
+to label all MVP work as a hotfix/patch version <em>without</em> any major or
+minor version. This shows that the product is moving forward and is
+easily tracked throughout development, but is obvious to a user that the
+gem is only wee babe.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">module</span> <span class="nn">Sidekiq</span>
+</span><span class='line'>  <span class="k">module</span> <span class="nn">Workflow</span>
+</span><span class='line'>    <span class="no">VERSION</span> <span class="o">=</span> <span class="s1">&#39;0.0.1&#39;</span><span class="p">;</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Based on this, sidekiq-workflow has an initial version of <code>0.0.1</code>. We&rsquo;ll
+talk more about this below when we discuss deploying our gem to
+<a href="https://rubygems.org/">RubyGems</a>.</p>
+
+<p>There are many other things we could customize as part of this initial
+setup. For instance, there is some <code>TODO</code> text in the <code>README.md</code> file
+by default (this file is shown on the Github repository&rsquo;s front page)
+that we could replace with actual readme information. But for now we
+should be ready to commit our work and get it into source control.
+Commit your changes with something like:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>git commit -am <span class="s1">&#39;Creates initial gem skeleton&#39;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Now all that&rsquo;s left is to add our remote Github repository to our local
+git remotes as <code>origin</code> and push our code so that it is safely in the
+cloud.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>git remote add origin
+</span><span class='line'>git@github.com:michaelkelly322/sidekiq-workflow.git
+</span><span class='line'>git push origin master
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>We now have an open source gem ready to start development up on Github.
+Take a look at the actual <a href="https://github.com/michaelkelly322/sidekiq-workflow">sidekiq-workflow repository</a>! Now
+let&rsquo;s work on making it available to developers around the world.</p>
+
+<p><a name="rubygems"></a></p>
+
+<h3>Deploying the Gem to RubyGems</h3>
+
+<p>Luckily, the nice folks over at <a href="http://rubygems.org">RubyGems</a> have
+made the process of making a gem publically available to anyone with a
+<code>Gemfile</code> and half a mind to type <code>gem 'sidekiq-workflow'</code> <em>EXTREMELY</em>
+easy. It is a two step process that includes building the gem and
+deploying the gem to RubyGems' servers.</p>
+
+<p>Building the gem is a simple as running the following command:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>gem build sidekiq-workflow.gemspec
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>This will build our modules into our gem based on the gemspec and saved
+it to a <code>.gem</code> file. The output should be something like if everything
+went according to plan:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>  Successfully built RubyGem
+</span><span class='line'>  Name: sidekiq-workflow
+</span><span class='line'>  Version: 0.0.1
+</span><span class='line'>  File: sidekiq-workflow-0.0.1.gem
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>The final step is to deploy our gem. This step is a bit hairy so bare
+with me. We have to first setup an account over at
+<a href="http://rubygems.org">RubyGems</a> and download our credentials file. Once
+you&rsquo;ve got an account created, use the following in a terminal to setup
+your credentials:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>curl -u thebadmonkeydev https://rubygems.org/api/v1/api_key.yaml
+</span><span class='line'>&lt; ~/.gem/credentials<span class="p">;</span> chmod <span class="m">0600</span> ~/.gem/credentials
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>you&rsquo;ll be prompted for your password and once entered, your credentials
+will be setup in your <code>~/.gem</code> folder. Now that we&rsquo;re all super
+authenticated and what not we can push our new gem out to the world
+using this simple command (notice that the file name is the same as the
+one produced by the build command above):</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>gem push sidekiq-workflow-0.0.1.gem
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>You should see <code>Successfully registered gem: sidekiq-workflow (0.0.1)</code>
+if everything was successful. You can now visit your dashboard on
+RubyGems to see your gem. Head on over to the <a href="https://rubygems.org/gems/sidekiq-workflow">sidekiq-workflow gem site</a> to see the actual
+sidekiq-workflow.</p>
+
+<p><a name="conclusion"></a></p>
+
+<h3>Conclusion</h3>
+
+<p>So what have we accomplished here? We now have a basic gem skeleton, in
+source control, and with a deployment procedure in place. Basically, we
+have everything we need to start actually developing this gem. Next time
+we&rsquo;ll talk about what it is that we&rsquo;re actually building and start
+putting together the first bits of functionality.</p>
+
+<p>Also, if you notice any errors/omissions or have any questions feel free
+to comment below and I&rsquo;ll reply back as soon as I possibly can.</p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">Michael Kelly</span></span>
+
+      
+
+
+
+
+<time class='entry-date' datetime='2015-06-09'><span class='date'><span class='date-month'>Jun</span> <span class='date-day'>9</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span> <span class='time'>12:00 am</span></time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/gems/'>gems</a>, <a class='category' href='/blog/categories/github/'>github</a>, <a class='category' href='/blog/categories/rails/'>rails</a>, <a class='category' href='/blog/categories/ruby/'>ruby</a>, <a class='category' href='/blog/categories/software-engineering/'>software engineering</a>, <a class='category' href='/blog/categories/tutorials/'>tutorials</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="//twitter.com/share" class="twitter-share-button" data-url="http://blog.badmonkeys.io/blog/2015/06/09/how-to-build-your-own-rails-gem-part-1/" data-via="" data-counturl="http://blog.badmonkeys.io/blog/2015/06/09/how-to-build-your-own-rails-gem-part-1/" >Tweet</a>
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2015/06/04/how-to-build-your-own-rails-gem/" title="Previous Post: How to build your own Rails Gem: Start to Finish">&laquo; How to build your own Rails Gem: Start to Finish</a>
+      
+      
+        <a class="basic-alignment right" href="/blog/2015/07/17/hey-do-you-even-poro/" title="Next Post: Hey, Do you even PORO?">Hey, Do you even PORO? &raquo;</a>
+      
+    </p>
+  </footer>
+</article>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2016/01/03/model-less-controllers-in-ruby-on-rails/">Model-less Controllers in Ruby on Rails</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2016/01/02/setting-up-badmonkeypress-for-heroku/">Welcome to the Bad Monkey Presses!</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/07/17/hey-do-you-even-poro/">Hey, Do You Even PORO?</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/06/09/how-to-build-your-own-rails-gem-part-1/">How to Build Your Own Rails Gem: Part 1 - the Gem</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/06/04/how-to-build-your-own-rails-gem/">How to Build Your Own Rails Gem: Start to Finish</a>
+      </li>
+    
+  </ul>
+</section>
+
+
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2016 - Michael Kelly -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = '//platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>
