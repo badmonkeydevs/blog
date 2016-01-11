@@ -1,4 +1,4 @@
 User-agent: *
 Disallow: 
 
-Sitemap: http://blog.badmonkeys.io/sitemap.xml 
+Sitemap: http://badmonkeys.github.io/sitemap.xml 

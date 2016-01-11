@@ -2,10 +2,10 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
 
   <title><![CDATA[Category: Refactoring | Bad Monkey Press]]></title>
-  <link href="http://blog.badmonkeys.io/blog/categories/refactoring/atom.xml" rel="self"/>
-  <link href="http://blog.badmonkeys.io/"/>
-  <updated>2016-01-11T01:08:58-05:00</updated>
-  <id>http://blog.badmonkeys.io/</id>
+  <link href="http://badmonkeys.github.io/blog/categories/refactoring/atom.xml" rel="self"/>
+  <link href="http://badmonkeys.github.io/"/>
+  <updated>2016-01-11T15:11:37-05:00</updated>
+  <id>http://badmonkeys.github.io/</id>
   <author>
     <name><![CDATA[Michael Kelly]]></name>
     
@@ -15,9 +15,9 @@
   
   <entry>
     <title type="html"><![CDATA[Model-less Controllers in Ruby on Rails]]></title>
-    <link href="http://blog.badmonkeys.io/blog/2016/01/03/model-less-controllers-in-ruby-on-rails/"/>
+    <link href="http://badmonkeys.github.io/blog/2016/01/03/model-less-controllers-in-ruby-on-rails/"/>
     <updated>2016-01-03T00:00:00-05:00</updated>
-    <id>http://blog.badmonkeys.io/blog/2016/01/03/model-less-controllers-in-ruby-on-rails</id>
+    <id>http://badmonkeys.github.io/blog/2016/01/03/model-less-controllers-in-ruby-on-rails</id>
     <content type="html"><![CDATA[<p><em><a href="https://badmonkeydev.wordpress.com/category/craft">The Bad Monkey Craft</a>: This is part of a series on software engineering
 craft.  The knowledge that takes us from factual tutorials and
 walkthroughs to truly elegant applications.  Each article in this series
@@ -200,9 +200,9 @@ let me know what you think!</p>
   
   <entry>
     <title type="html"><![CDATA[Hey, Do You Even PORO?]]></title>
-    <link href="http://blog.badmonkeys.io/blog/2015/07/17/hey-do-you-even-poro/"/>
+    <link href="http://badmonkeys.github.io/blog/2015/07/17/hey-do-you-even-poro/"/>
     <updated>2015-07-17T00:00:00-04:00</updated>
-    <id>http://blog.badmonkeys.io/blog/2015/07/17/hey-do-you-even-poro</id>
+    <id>http://badmonkeys.github.io/blog/2015/07/17/hey-do-you-even-poro</id>
     <content type="html"><![CDATA[<p>Introduces POR objects and demonstrates the surprising benefits of NOT
 using ActiveRecord objects</p>
 

@@ -2,10 +2,10 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
 
   <title><![CDATA[Category: Gems | Bad Monkey Press]]></title>
-  <link href="http://blog.badmonkeys.io/blog/categories/gems/atom.xml" rel="self"/>
-  <link href="http://blog.badmonkeys.io/"/>
-  <updated>2016-01-11T01:08:58-05:00</updated>
-  <id>http://blog.badmonkeys.io/</id>
+  <link href="http://badmonkeys.github.io/blog/categories/gems/atom.xml" rel="self"/>
+  <link href="http://badmonkeys.github.io/"/>
+  <updated>2016-01-11T15:11:37-05:00</updated>
+  <id>http://badmonkeys.github.io/</id>
   <author>
     <name><![CDATA[Michael Kelly]]></name>
     
@@ -15,9 +15,9 @@
   
   <entry>
     <title type="html"><![CDATA[How to Build Your Own Rails Gem: Part 1 - the Gem]]></title>
-    <link href="http://blog.badmonkeys.io/blog/2015/06/09/how-to-build-your-own-rails-gem-part-1/"/>
+    <link href="http://badmonkeys.github.io/blog/2015/06/09/how-to-build-your-own-rails-gem-part-1/"/>
     <updated>2015-06-09T00:00:00-04:00</updated>
-    <id>http://blog.badmonkeys.io/blog/2015/06/09/how-to-build-your-own-rails-gem-part-1</id>
+    <id>http://badmonkeys.github.io/blog/2015/06/09/how-to-build-your-own-rails-gem-part-1</id>
     <content type="html"><![CDATA[<p>A walkthrough of  the process of creating a basic gem structure and gem
 development workflow.</p>
 
@@ -319,9 +319,9 @@ to comment below and I&rsquo;ll reply back as soon as I possibly can.</p>
   
   <entry>
     <title type="html"><![CDATA[How to Build Your Own Rails Gem: Start to Finish]]></title>
-    <link href="http://blog.badmonkeys.io/blog/2015/06/04/how-to-build-your-own-rails-gem/"/>
+    <link href="http://badmonkeys.github.io/blog/2015/06/04/how-to-build-your-own-rails-gem/"/>
     <updated>2015-06-04T00:00:00-04:00</updated>
-    <id>http://blog.badmonkeys.io/blog/2015/06/04/how-to-build-your-own-rails-gem</id>
+    <id>http://badmonkeys.github.io/blog/2015/06/04/how-to-build-your-own-rails-gem</id>
     <content type="html"><![CDATA[<p>Introduces why we&rsquo;d want to create a Rails Gem and begins a step-by-step
 guide to developing an actual open source Gem.</p>
 

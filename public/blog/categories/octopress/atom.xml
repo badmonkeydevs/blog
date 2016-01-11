@@ -2,10 +2,10 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
 
   <title><![CDATA[Category: Octopress | Bad Monkey Press]]></title>
-  <link href="http://blog.badmonkeys.io/blog/categories/octopress/atom.xml" rel="self"/>
-  <link href="http://blog.badmonkeys.io/"/>
-  <updated>2016-01-11T01:08:58-05:00</updated>
-  <id>http://blog.badmonkeys.io/</id>
+  <link href="http://badmonkeys.github.io/blog/categories/octopress/atom.xml" rel="self"/>
+  <link href="http://badmonkeys.github.io/"/>
+  <updated>2016-01-11T15:11:37-05:00</updated>
+  <id>http://badmonkeys.github.io/</id>
   <author>
     <name><![CDATA[Michael Kelly]]></name>
     
@@ -15,9 +15,9 @@
   
   <entry>
     <title type="html"><![CDATA[Welcome to the Bad Monkey Presses!]]></title>
-    <link href="http://blog.badmonkeys.io/blog/2016/01/02/setting-up-badmonkeypress-for-heroku/"/>
+    <link href="http://badmonkeys.github.io/blog/2016/01/02/setting-up-badmonkeypress-for-heroku/"/>
     <updated>2016-01-02T20:04:58-05:00</updated>
-    <id>http://blog.badmonkeys.io/blog/2016/01/02/setting-up-badmonkeypress-for-heroku</id>
+    <id>http://badmonkeys.github.io/blog/2016/01/02/setting-up-badmonkeypress-for-heroku</id>
     <content type="html"><![CDATA[<p>I set out to setup a basic jekyll (in this case
 <a href="http://www.http://octopress.org/">Octopress</a>) blog for the Bad Monkeys
 so that they could share their thoughts on software development,
