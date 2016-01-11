@@ -4,7 +4,7 @@
   <title><![CDATA[Bad Monkey Press]]></title>
   <link href="http://blog.badmonkeys.io/atom.xml" rel="self"/>
   <link href="http://blog.badmonkeys.io/"/>
-  <updated>2016-01-02T20:24:55-05:00</updated>
+  <updated>2016-01-11T01:08:58-05:00</updated>
   <id>http://blog.badmonkeys.io/</id>
   <author>
     <name><![CDATA[Michael Kelly]]></name>
@@ -12,6 +12,191 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Model-less Controllers in Ruby on Rails]]></title>
+    <link href="http://blog.badmonkeys.io/blog/2016/01/03/model-less-controllers-in-ruby-on-rails/"/>
+    <updated>2016-01-03T00:00:00-05:00</updated>
+    <id>http://blog.badmonkeys.io/blog/2016/01/03/model-less-controllers-in-ruby-on-rails</id>
+    <content type="html"><![CDATA[<p><em><a href="https://badmonkeydev.wordpress.com/category/craft">The Bad Monkey Craft</a>: This is part of a series on software engineering
+craft.  The knowledge that takes us from factual tutorials and
+walkthroughs to truly elegant applications.  Each article in this series
+is intended to inspire thought and conversation into the different ways
+we use our web frameworks and the pieces that make them up.  Read along
+and join the conversation about the craft of writing web
+applications!</em></p>
+
+<!-- more -->
+
+
+<p>So you&rsquo;re fresh out of a code bootcamp like <a
+href="https://generalassemb.ly/">General Assembly</a> or <a
+href="https://www.theironyard.com/">The Iron Yard</a>; Or maybe you
+spent some hard earned hours at the ole' google, cranking out tutorials
+and examples.  What you know now is that Ruby on Rails is an MVC web app
+framework and you make routes that point to controllers with actions
+that represent the basic CRUD (<strong>C</strong>reate,
+<strong>R</strong>ead, <strong>U</strong>pdate, <strong>D</strong>elete)
+for a model. All of this is true.  Except for one small assumption&hellip;In
+real-world applications, it is not always so cut and dry.  You start
+collecting more and more actions in your controller to marshal different
+resources, preform some kind of processing, or render non-standard
+views.</p>
+
+<p>If you keep up with this long enough, you&rsquo;ll find your controllers
+getting fat, your list of actions getting longer and longer while your
+text editor struggles to even parse the file. <strong>Fear Not
+Adventurer!</strong> There&rsquo;s a relatively simple way to design these
+creeping complexities so that your project is still maintainable and
+understandable&hellip;I call this approach <em>Model-less Controllers</em>.</p>
+
+<h2>What are Model-less Controllers?</h2>
+
+
+<p><em>&ldquo;Model-less Controller&rdquo;</em> is the name I&rsquo;ve given to Rails
+controllers that don&rsquo;t represent a clear-cut rails model.  They instead
+represent a conceptual resource that can be just about anything.  There
+are a few different types including static controllers, composite
+controllers, and aggregate controllers.  We&rsquo;ll see some examples of
+these in just a minute, but the easiest way to envision this concept is
+that they are</p>
+
+<blockquote>
+  Model-less Controllers are controllers that do not tie one-to-one with
+  a resource in your system.
+</blockquote>
+
+
+
+
+<h3>Not Your Average Controllers</h3>
+
+
+<p>&ldquo;But, Michael, if there&rsquo;s a view or a data object behind my controller
+it technically has a resource!?&rdquo; you might be asking.  Well, that&rsquo;s
+true.  I&rsquo;m speaking to those in the community who are just learning
+Ruby on Rails from a tutorial like <a
+href="https://www.railstutorial.org/">Michael Hartle&rsquo;s</a> and are
+looking to take their solution design to a higher level.  Composite or
+<em>Model-less</em> controllers are those that don&rsquo;t follow the RoR
+way.  They can&rsquo;t be generated as a scaffold with <code>rails
+generate</code>.</p>
+
+<p>There are a couple of different types of model-less controllers
+including composite, aggregate, and static controllers.  Here are a
+few examples:</p>
+
+<h4>Static Pages a la <a href="https://www.railstutorial.org/">Michael Hartle's Rails Tutorial</a></h4>
+
+
+<p>Mike uses what I call &ldquo;static&rdquo; controllers pretty early in his
+tutorial when he&rsquo;s adding static pages to the example app.  These
+controllers are meant primarily as a shim between the router and the
+static views you want at an endpoint.  Most if any logic in these
+controllers is going to be related to localization or time-based
+output.</p>
+
+<h4>Devise's Registration and Session Controllers</h4>
+
+
+<p><a href="https://github.com/plataformatec/devise">Devise</a> provides
+a fairly simple way to add authentication to a RoR app.  A few
+commands and <strong>BOOM</strong> you&rsquo;ve got database authentication,
+or OAuth integration right out of the gate&hellip;it even includes a ton of
+helpful routes like <code>/users/registration/new</code> and
+<code>users/session/new</code> that setup user signup and user login
+to work with <a
+href="https://github.com/plataformatec/devise">Devise</a>&rsquo;s internal
+controllers.</p>
+
+<p>If you&rsquo;ve ever extended any of these to customize the login behavior
+or to add more detailed logic to user signup, then you&rsquo;ve worked with
+<em>Composite Controllers</em>.  These controllers loosely represent a
+resource in your app.  However, it is not one that ties directly to a
+model.  You&rsquo;ll find no <code>Session</code> or
+<code>Registration</code> models.  These are composite concepts that
+relate to a type of <code>User</code> model interaction.</p>
+
+<h4>Dashboards</h4>
+
+
+<p>Modern web applications almost always require some kind of dashboard
+functionality.  Whether that is an admin panel to get at-a-glance
+information about your sales application, or a KPI/analytics page for
+your CRM tool, it is still a page dedicated to presenting information
+that intentionally cross-cuts the entire platform.  You&rsquo;ll be reading
+from four tables and running aggregation mathematics to be cached and
+retrieved by the page.</p>
+
+<p>With a complicated feature like a dashboard, it is almost certain that
+you&rsquo;ll find what I call <em>Aggregate Controllers</em> behind the
+scenes.  These controllers are responsible for the marshaling of large
+amount of data, spread seemingly at random across a massive database.
+You&rsquo;ll also often see controllers like these interacting with Redis or
+Memcache to access data that has been aggregated by a background
+process.</p>
+
+<h3>How Do I Implement an Aggregate/Composite Controller?</h3>
+
+
+<p>So here&rsquo;s the thing.  You don&rsquo;t.  These <em>special</em> types of
+controllers are nothing more than a standard Rails controller, just
+without a matching model.  The difference is in how you use them and
+the logic that lives within them (or the objects that they in turn
+delegate action to).  My intent here is to point out that there are
+many different ways to think about controllers and we can&rsquo;t let
+ourselves get stuck creating entire scaffolds for features that may
+have been better served by compiling or aggregating data already
+available into it&rsquo;s own controller.</p>
+
+<p>You&rsquo;ll also find that by thinking about your controllers as more than
+just faceplates for your models, you can more easily refactor your
+existing logic into a wider assortment of controllers, isolating logic
+into conceptual units is never a bad thing ;).</p>
+
+<h2>What about my API and RESTfulness?</h2>
+
+
+<p>In talking about this topic with other engineers I&rsquo;ve found one
+question pretty common.</p>
+
+<blockquote>
+  What about RESTful APIs?  Shouldn't they be resource-backed?
+</blockquote>
+
+
+<p>And the answer to this is &ldquo;Yes&rdquo;.  However, you&rsquo;d be surprised how
+many APIs are out there that present RESTful data (data that can be
+created, read, updated, and deleted) that is not in fact backed by a
+specific model that matches the structure of your RESTful resource.
+Think about the example I gave above about <a
+href="https://github.com/plataformatec/devise">Devise</a>&rsquo;s
+controller structure.  They work with a RESTful resource like a
+<code>Session</code>.  A session can be created (logging in), read
+(current_user specific info), updated (storing of session related
+values like page visits or temporary objects), and deleted (logging
+out).  It is a viable RESTful resource, but there is again no
+persisted <code>Session</code> object in our application (and I&rsquo;m
+not referring to the <code>session</code> hash in Rails, that is
+only a key-value store that represents the so-called fields of our
+conceptual <code>Session</code>.</p>
+
+<h2>Conclusion</h2>
+
+
+<p>I hope I&rsquo;ve shown you some good examples of other ways of thinking
+about your Rails controllers.  Model-less controllers are a great
+way to decouple the data representation used by your application and
+the data representation used by your client or users.  This kind of
+benefit allows your application to adapt and adjust technically
+while maintaining a consistent structure in the eyes of the people
+using it.</p>
+
+<p>Do you dis/agree with me?  Leave a comment below or hit me up <a
+href="https://twitter.com/thebadmonkeydev">@thebadmonkeydev</a> and
+let me know what you think!</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Welcome to the Bad Monkey Presses!]]></title>
@@ -37,6 +222,770 @@ can build a superior MVP of your product.</p>
 <p>We also specialize in automating our process and we <em>LOVE</em> eating our
 own dog food.  That means that when you come to us for your project,
 you&rsquo;ll get the most streamlined and optimized experience possible.</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Hey, Do You Even PORO?]]></title>
+    <link href="http://blog.badmonkeys.io/blog/2015/07/17/hey-do-you-even-poro/"/>
+    <updated>2015-07-17T00:00:00-04:00</updated>
+    <id>http://blog.badmonkeys.io/blog/2015/07/17/hey-do-you-even-poro</id>
+    <content type="html"><![CDATA[<p>Introduces POR objects and demonstrates the surprising benefits of NOT
+using ActiveRecord objects</p>
+
+<!-- more -->
+
+
+<h2>First Things First</h2>
+
+<p>I know it&rsquo;s been a couple of weeks since my last post and I owe you an
+apology. I&rsquo;ve been head-down working on coming up to speed over at
+<a href="http://monsieur.co/">Monsieur</a> in the <a href="http://atdc.org/">ATDC</a>. It&rsquo;s a
+really cool space with excellent growth potential. I&rsquo;m taking over an
+pretty well written MVP architecture and will be working hard in the
+coming months to take it to true production quality. I&rsquo;ve only been at
+it for just a couple of weeks now and I&rsquo;m getting really excited to see
+where this product will go.  Right now we&rsquo;re also on the hunt for
+another <a href="http://monsieur.co/careers/">Senior Web Engineer</a> to help me
+out in this effort.  Come check us out!</p>
+
+<p>While I&rsquo;m digging into new code, designing for growth and scale, and
+forging new ground with this code base, I thought it&rsquo;d be a good idea to
+share some of my thoughts on code design. Now I&rsquo;m I know what you&rsquo;re
+thinking &ldquo;Michael, what happened to the next post in the <a
+href="https://badmonkeydev.wordpress.com/2015/06/04/how-to-build-your-own-ruby-gem-from-start-to-finish/">How
+to Build Your Own Gem series</a>? Well don&rsquo;t worry, I&rsquo;m still working on
+that, I just haven&rsquo;t had much time to work on
+<a href="https://github.com/michaelkelly322/sidekiq-workflow">sidekiq-workflow</a>
+recently. You&rsquo;ll see more on that soon.</p>
+
+<p>What I want to share today is a pattern I use quiet often when
+refactoring and designing Rails apps. It&rsquo;s very useful for creating
+writable, readable, and highly modularized code. It&rsquo;s also a great means
+of introducing domain abstraction into your app which will only reveal
+more patterns and abstractions that will help the app grow and expand
+gracefully.</p>
+
+<h2>POR Objects</h2>
+
+<p>So it happens sometimes when rails apps grow that a model takes on too
+much responsibility. The file is hundreds of lines long, you see methods
+like <code>reset_spend_cap</code> and <code>set_spend_cap</code>, and new developers have
+absolutely no idea where to find the code they need. One of the things
+to remember in this situation is that just because we&rsquo;re writing a rails
+app, doesn&rsquo;t mean we HAVE to use ActiveRecord for all of our objects.
+Plain Old Ruby(POR) objects work <em>GREAT</em> for encapsulating modular code
+and shrinking those ginormous models.</p>
+
+<p>To get started let&rsquo;s look at the examples I listed in the last
+paragraph. Imagine we have a model file that looks like this:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">class</span> <span class="nc">Account</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
+</span><span class='line'>  <span class="c1"># Hundreds of lines of CRUFT</span>
+</span><span class='line'>  <span class="c1"># .</span>
+</span><span class='line'>  <span class="c1"># .</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">reset_spend_cap</span>
+</span><span class='line'>    <span class="c1"># stuff</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">set_spend_cap</span>
+</span><span class='line'>    <span class="c1"># stuff</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="c1"># Maybe even hundreds more!!</span>
+</span><span class='line'>  <span class="c1"># .</span>
+</span><span class='line'>  <span class="c1"># .</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Without even knowing what these two methods do we can see that they
+share something in common. They both deal with something called a &ldquo;Spend
+Cap.&rdquo; This is a concept in the Facebook Marketing API, but could just as
+easily be connected to any environment&rsquo;s domain specific functionality.
+Now imagine that Facebook decides to add a whole lot more functionality
+to their SpendCap model&hellip;what do we do? (*Hint: if you say &ldquo;write the
+methods in the Account model!&rdquo; I&rsquo;m going to find you
+and&hellip;ahem&hellip;<a href="http://izquotes.com/quote/299176">explain things</a> to you)</p>
+
+<p>We make a Plain Old Ruby object of course!! Take all those new methods
+you&rsquo;ll have to write and move them to their own class like this:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="c1"># app/models/spend_cap.rb</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">class</span> <span class="nc">SpendCap</span>
+</span><span class='line'>  <span class="kp">attr_accessor</span> <span class="ss">:account</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">initialize</span><span class="p">(</span><span class="n">account</span><span class="p">)</span>
+</span><span class='line'>    <span class="nb">self</span><span class="o">.</span><span class="n">account</span> <span class="o">=</span> <span class="n">account</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">reset</span>
+</span><span class='line'>    <span class="c1"># stuff, now using the instance variable :account</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">set</span>
+</span><span class='line'>    <span class="c1"># stuff, now using the instance variable :account</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Yup! It&rsquo;s that easy to create POR objects and house them in Rails. Just
+put them in the <code>models</code> directory and <em>DON&rsquo;T</em> inherit the class from
+<code>ActiveRecord::Base</code>. Plus, now when we want reset a spend cap we can
+write the following which is much more readable in terms of the &ldquo;What
+the f*^@ is going on here&rdquo; perspective:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">account</span> <span class="o">=</span> <span class="no">Account</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="n">params</span><span class="o">[</span><span class="ss">:id</span><span class="o">]</span><span class="p">)</span>
+</span><span class='line'><span class="no">SpendCap</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">account</span><span class="p">)</span><span class="o">.</span><span class="n">reset</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>This is mostly clean code and it gives us a really convenient place to
+put business logic and new features related to the SpendCap
+functionality. I say &ldquo;mostly clean&rdquo; because I don&rsquo;t really like the look
+of <code>SpendCap.new(account).reset</code> and I <em>REALLY</em> hate typing it. The
+<code>new</code> method chained in there makes it difficult to read clearly and
+we&rsquo;re not really creating something new (except the object in memory,
+but in the context of our app, we want to work with code that is
+syntactically similar to our business domain). But don&rsquo;t worry, I&rsquo;ve got
+a simple trick up my sleeve that has worked great for me.</p>
+
+<h2>A Nifty Initializer</h2>
+
+<p>I mentioned earlier that the constant use of <code>new</code> to pass context
+information to a ruby helper object is a little misleading and
+cumbersome, plus you end up typing <code>.new(account)</code> six billion times
+each day. I&rsquo;ve found that by switching the mental model from &ldquo;A new
+SpendCap Model with account&rdquo;, it is helpful to think like an array of
+SpendCaps and say &ldquo;The SpendCap for this account&rdquo;. And an implementation
+that supports this change looks like this:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="no">SpendCap</span><span class="o">[</span><span class="n">account</span><span class="o">].</span><span class="n">reset</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>which in ruby can be easily implemented by adding one extra method to
+our SpendCap class:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="c1"># app/models/spend_cap.rb</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">class</span> <span class="nc">SpendCap</span>
+</span><span class='line'>  <span class="kp">attr_accessor</span> <span class="ss">:account</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">def</span> <span class="nc">self</span><span class="o">.</span><span class="nf">[]</span><span class="p">(</span><span class="n">account</span><span class="p">)</span>
+</span><span class='line'>    <span class="nb">self</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">account</span><span class="p">)</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">initialize</span><span class="p">(</span><span class="n">account</span><span class="p">)</span>
+</span><span class='line'>    <span class="nb">self</span><span class="o">.</span><span class="n">account</span> <span class="o">=</span> <span class="n">account</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">reset</span>
+</span><span class='line'>    <span class="c1"># stuff, now using the instance variable :account</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">set</span>
+</span><span class='line'>    <span class="c1"># stuff, now using the instance variable :account</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>The method signature <code>def self.[](account)</code> creates a class method &ldquo;[]&rdquo;
+that accepts a parameter. This way when we&rsquo;re writing against our helper
+object, we can think of the object in a more efficient way, we reduce
+the overall characters needed, and it just plain looks cleaner to me.</p>
+
+<h2>Conclusion</h2>
+
+<p>Plain old ruby objects are an extremely powerful way to encapsulate
+similar functionality and to introduce some domain abstraction into your
+application. It also has the added benefit of tying pieces of code to
+terms and concepts used in the problem domain so new developers will
+learn things like Facebook&rsquo;s SpendCap and immediately have the
+information necessary to look directly at the functionality that
+supports it.  <em>BONUS</em> They&rsquo;re super easy to use and should be in every
+Rails engineer&rsquo;s toolbox.</p>
+
+<p>The new initializer pattern I introduced is a clean way of working with
+these objects and makes working with them downright enjoyable. I highly
+recommend that the next time you&rsquo;re facing down a monolithic rails
+model, take a look at how you may be able to abstract some of the mess
+away into helper objects.</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[How to Build Your Own Rails Gem: Part 1 - the Gem]]></title>
+    <link href="http://blog.badmonkeys.io/blog/2015/06/09/how-to-build-your-own-rails-gem-part-1/"/>
+    <updated>2015-06-09T00:00:00-04:00</updated>
+    <id>http://blog.badmonkeys.io/blog/2015/06/09/how-to-build-your-own-rails-gem-part-1</id>
+    <content type="html"><![CDATA[<p>A walkthrough of  the process of creating a basic gem structure and gem
+development workflow.</p>
+
+<!-- more -->
+
+
+<h2>Creating a Basic Gem and Setting Up Github</h2>
+
+<p>This week we&rsquo;re going to get our project setup and create our basic
+skeleton which will act as the foundation of sidekiq-workflow. This is
+probably going to be a long post, but you are welcome to skip any
+sections with which you&rsquo;re familiar.</p>
+
+<h2>Let&rsquo;s Get Started</h2>
+
+<ul>
+<li><a href="#skeleton">The Generator and Gem Skeleton</a></li>
+<li><a href="#gemspec">The Gemspec</a></li>
+<li><a href="#module">The Workflow Module</a></li>
+<li><a href="#source-control">Getting the Gem Into Source Control</a></li>
+<li><a href="#rubygems">Deploying the Gem to RubyGems</a></li>
+<li><a href="#conclusion">Conclusion</a></li>
+</ul>
+
+
+<p><a name="skeleton"></a></p>
+
+<h3>The Generator and Gem Skeleton</h3>
+
+<p>Bundler is the gold standard for gem packaging and management. If you&rsquo;ve
+done any rails development (and I sincerely hope you have, it&rsquo;s great
+fun!) you&rsquo;re familiar with the project&rsquo;s <code>Gemfile</code> which is used by
+bundler when it installs dependencies. Luckily for us, it also includes
+a generator for a skeleton gem. The generator has some special magic
+sauce based on your gem&rsquo;s name. You can find a full reference on <a href="http://guides.rubygems.org/name-your-gem/">How to
+Name Your Gem</a> over in the
+RubyGems guides. In our case, I&rsquo;m using <code>sidekiq-workflow</code> because the
+<code>-</code> between <code>sidekiq</code> and <code>workflow</code> indicates that <code>sidekiq</code> is the
+name of my top level module and <code>workflow</code> is a sub-module. With this I
+can write syntax like:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="c1"># run a workflow with parameters</span>
+</span><span class='line'><span class="no">Sidekiq</span><span class="o">::</span><span class="no">Workflow</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">workflow_definition</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1"># or include sub-classes like this later</span>
+</span><span class='line'><span class="no">Sidekiq</span><span class="o">::</span><span class="no">Workflow</span><span class="o">::</span><span class="no">Monitor</span><span class="o">.</span><span class="n">new</span><span class="p">()</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>This keeps our gem in the same namespace as Sidekiq itself and makes for
+a rather clean gem API. The generator command looks like this:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>bundle gem sidekiq-workflow
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Bundler will create a folder in the current directory named
+<code>sidekiq-workflow</code> and then generate all the necessary gem files within
+it. You should see output similar to:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>Code of conduct enabled in config
+</span><span class='line'>MIT License enabled in config
+</span><span class='line'>create sidekiq-workflow/Gemfile
+</span><span class='line'>create sidekiq-workflow/.gitignore
+</span><span class='line'>create sidekiq-workflow/lib/sidekiq/workflow.rb
+</span><span class='line'>create sidekiq-workflow/lib/sidekiq/workflow/version.rb
+</span><span class='line'>create sidekiq-workflow/sidekiq-workflow.gemspec
+</span><span class='line'>create sidekiq-workflow/Rakefile
+</span><span class='line'>create sidekiq-workflow/README.md
+</span><span class='line'>create sidekiq-workflow/bin/console
+</span><span class='line'>create sidekiq-workflow/bin/setup
+</span><span class='line'>create sidekiq-workflow/CODE_OF_CONDUCT.md
+</span><span class='line'>create sidekiq-workflow/LICENSE.txt
+</span><span class='line'>create sidekiq-workflow/.travis.yml
+</span><span class='line'>create sidekiq-workflow/.rspec
+</span><span class='line'>create sidekiq-workflow/spec/spec_helper.rb
+</span><span class='line'>create sidekiq-workflow/spec/sidekiq/workflow_spec.rb
+</span><span class='line'>Initializing git repo in /home/michael/Data/gems/sidekiq-workflow
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>You can see from the output that this command has generated a lot of
+files for your gem. Most of these are standard like <code>.gitignore</code>,
+<code>README.md</code>, <code>LICENSE.txt</code>, familiar rspec testing setup, etc. However,
+when it comes to the actual gem files, there are two that are the most
+important. They are <code>sidekiq-workflow.gemspec</code> and
+<code>lib/sidekiq/workflow.rb</code>. I&rsquo;ll discuss both in detail below.</p>
+
+<p><a name="gemspec"></a></p>
+
+<h4>The Gemspec</h4>
+
+<p>The <code>gemspec</code> file is the main location for the configuration of our
+gem&rsquo;s metadata. This is where we set fancy things like our gem name,
+version, summary/description, gem dependecies, etc. The <code>gemspec</code> file
+for sidekiq-workflow looks like this:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="c1"># coding: utf-8</span>
+</span><span class='line'><span class="n">lib</span> <span class="o">=</span> <span class="no">File</span><span class="o">.</span><span class="n">expand_path</span><span class="p">(</span><span class="s1">&#39;../lib&#39;</span><span class="p">,</span> <span class="bp">__FILE__</span><span class="p">)</span>
+</span><span class='line'><span class="vg">$LOAD_PATH</span><span class="o">.</span><span class="n">unshift</span><span class="p">(</span><span class="n">lib</span><span class="p">)</span> <span class="k">unless</span> <span class="vg">$LOAD_PATH</span><span class="o">.</span><span class="n">include?</span><span class="p">(</span><span class="n">lib</span><span class="p">)</span>
+</span><span class='line'><span class="nb">require</span> <span class="s1">&#39;sidekiq/workflow/version&#39;</span>
+</span><span class='line'>
+</span><span class='line'><span class="no">Gem</span><span class="o">::</span><span class="no">Specification</span><span class="o">.</span><span class="n">new</span> <span class="k">do</span> <span class="o">|</span><span class="n">spec</span><span class="o">|</span>
+</span><span class='line'>  <span class="n">spec</span><span class="o">.</span><span class="n">name</span>          <span class="o">=</span> <span class="s1">&#39;sidekiq-workflow&#39;</span>
+</span><span class='line'>  <span class="n">spec</span><span class="o">.</span><span class="n">version</span>       <span class="o">=</span> <span class="no">Sidekiq</span><span class="o">::</span><span class="no">Workflow</span><span class="o">::</span><span class="no">VERSION</span>
+</span><span class='line'>  <span class="n">spec</span><span class="o">.</span><span class="n">authors</span>       <span class="o">=</span> <span class="o">[</span><span class="s1">&#39;Michael Kelly&#39;</span><span class="o">]</span>
+</span><span class='line'>  <span class="n">spec</span><span class="o">.</span><span class="n">email</span>         <span class="o">=</span> <span class="o">[</span><span class="s1">&#39;michaelkelly322@gmail.com&#39;</span><span class="o">]</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="n">spec</span><span class="o">.</span><span class="n">summary</span>       <span class="o">=</span> <span class="s1">&#39;Complex workflow management in</span>
+</span><span class='line'><span class="s1">Sidekiq&#39;</span>
+</span><span class='line'>  <span class="n">spec</span><span class="o">.</span><span class="n">description</span>   <span class="o">=</span> <span class="s1">&#39;Allows the execution of mixed parallel and</span>
+</span><span class='line'><span class="s1">sequential workflows.  A workflow can be defined at runtime and executed</span>
+</span><span class='line'><span class="s1">with full sidekiq integration.&#39;</span>
+</span><span class='line'>  <span class="n">spec</span><span class="o">.</span><span class="n">homepage</span>      <span class="o">=</span>
+</span><span class='line'><span class="s1">&#39;https://github.com/michaelkelly322/sidekiq-workflow&#39;</span>
+</span><span class='line'>  <span class="n">spec</span><span class="o">.</span><span class="n">license</span>       <span class="o">=</span> <span class="s1">&#39;MIT&#39;</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="n">spec</span><span class="o">.</span><span class="n">files</span>         <span class="o">=</span> <span class="sb">`git ls-files -z`</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;\x0&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">reject</span> <span class="p">{</span>
+</span><span class='line'><span class="o">|</span><span class="n">f</span><span class="o">|</span> <span class="n">f</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="sr">%r{^(test|spec|features)/}</span><span class="p">)</span> <span class="p">}</span>
+</span><span class='line'>  <span class="n">spec</span><span class="o">.</span><span class="n">bindir</span>        <span class="o">=</span> <span class="s1">&#39;exe&#39;</span>
+</span><span class='line'>  <span class="n">spec</span><span class="o">.</span><span class="n">executables</span>   <span class="o">=</span> <span class="n">spec</span><span class="o">.</span><span class="n">files</span><span class="o">.</span><span class="n">grep</span><span class="p">(</span><span class="sr">%r{^exe/}</span><span class="p">)</span> <span class="p">{</span> <span class="o">|</span><span class="n">f</span><span class="o">|</span> <span class="no">File</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>  <span class="n">spec</span><span class="o">.</span><span class="n">require_paths</span> <span class="o">=</span> <span class="o">[</span><span class="s1">&#39;lib&#39;</span><span class="o">]</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="n">spec</span><span class="o">.</span><span class="n">required_ruby_version</span> <span class="o">=</span> <span class="s1">&#39;1.9&#39;</span>
+</span><span class='line'>  <span class="n">spec</span><span class="o">.</span><span class="n">add_development_dependency</span> <span class="s1">&#39;bundler&#39;</span><span class="p">,</span> <span class="s1">&#39;~&lt;</span>
+</span><span class='line'><span class="s1">1.10&#39;</span>
+</span><span class='line'>  <span class="n">spec</span><span class="o">.</span><span class="n">add_development_dependency</span> <span class="s1">&#39;rake&#39;</span><span class="p">,</span> <span class="s1">&#39;~&lt;</span>
+</span><span class='line'><span class="s1">10.0&#39;</span>
+</span><span class='line'>  <span class="n">spec</span><span class="o">.</span><span class="n">add_development_dependency</span> <span class="s1">&#39;rspec&#39;</span><span class="p">,</span> <span class="s1">&#39;~&lt;</span>
+</span><span class='line'><span class="s1">3.2&#39;</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>There&rsquo;s a lot of boiler plate there that we don&rsquo;t really have the screen
+space to explore in this tutorial (I plan on posting a dedicated post on
+the elements of a <code>gemspec</code> file in the near future). The default
+configuration is pretty good for now (except of course the things that
+are custom to our gem like name and description). What is important to
+note is that it is extremely bad form to use the <code>Gemfile</code> in our gem to
+manage dependecies. Instead, we use the <code>gemspec</code> file instead. Notice
+the section that starts with the line <code>spec.add_development_dependency
+"bundler", "~&gt; 1.10"</code>? This adds a development dependency on bundler.
+Development dependencies are gems that are used during the development
+of our gem, but not to be included in the actual packaged gem (things
+like testing, building, etc.). To add runtime dependencies you would use
+<code>spec.add_runtime_dependency 'gem_name', '1.2.3'</code> which tells the spec
+that the gem is to be included as a dependency when the gem is packaged
+for release (meaning our users will need to have these gems to run
+ours).</p>
+
+<p>This structure is similar to groups in a standard <code>Gemfile</code>. However,
+the <code>Gemfile</code> itself will be used by our users when installing
+dependencies and their configuration has to be passed through the gem
+packaging process to be setup properly. That is why we include them in
+the <code>gemspec</code> and not directly in the <code>Gemfile</code>.
+<a name="module"></a></p>
+
+<h4>The Workflow Module</h4>
+
+<p>The other major file involved with gem development is the gem&rsquo;s main
+module file. It can be found in the <code>lib/</code> parent folder that bundler
+created. In our case, it is located at <code>lib/sidekiq/workflow.rb</code> and if
+you haven&rsquo;t modified it yet should look like:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="nb">require</span> <span class="s1">&#39;sidekiq/workflow/version&#39;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">module</span> <span class="nn">Sidekiq</span>
+</span><span class='line'>  <span class="k">module</span> <span class="nn">Workflow</span>
+</span><span class='line'>    <span class="c1"># Your code goes here...</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>This is essentially the entry point of your gem. Remember earlier when I
+talked about syntax like <code>Sidekiq::Workflow.run()</code>? Well here&rsquo;s where
+we&rsquo;d implement a run method, but more on that in a later post ;)</p>
+
+<p><a name="source-control"></a></p>
+
+<h3>Getting the Gem Into Source Control</h3>
+
+<p>Before we commit any of our code above, we need to make one modification
+to our <code>.gitignore</code> file</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="o">*.</span><span class="n">gem</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>This way we don&rsquo;t commit our actual bundled gem after we&rsquo;ve built it for
+deployment to RubyGems. A flaw in the generator in my opinion because
+the standard practice is to bundle the gem from within your projects
+directory. Therefore, we shouldn&rsquo;t be committing specific (read
+versioned) <code>.gem</code> files. The default should be to exclude them.</p>
+
+<p>I also like to start my gem development with an obviously not
+production-ready version. Bundler&rsquo;s generator initialized a file called
+<code>lib/sidekiq/workflow/version.rb</code>. If you noticed above, our <code>gemspec</code>
+file references this files module when setting the gem version (makes it
+easier to script bumping the version number. The default version is
+<code>0.1.0</code>. But based on my experience with semantic versioning, it is best
+to label all MVP work as a hotfix/patch version <em>without</em> any major or
+minor version. This shows that the product is moving forward and is
+easily tracked throughout development, but is obvious to a user that the
+gem is only wee babe.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">module</span> <span class="nn">Sidekiq</span>
+</span><span class='line'>  <span class="k">module</span> <span class="nn">Workflow</span>
+</span><span class='line'>    <span class="no">VERSION</span> <span class="o">=</span> <span class="s1">&#39;0.0.1&#39;</span><span class="p">;</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Based on this, sidekiq-workflow has an initial version of <code>0.0.1</code>. We&rsquo;ll
+talk more about this below when we discuss deploying our gem to
+<a href="https://rubygems.org/">RubyGems</a>.</p>
+
+<p>There are many other things we could customize as part of this initial
+setup. For instance, there is some <code>TODO</code> text in the <code>README.md</code> file
+by default (this file is shown on the Github repository&rsquo;s front page)
+that we could replace with actual readme information. But for now we
+should be ready to commit our work and get it into source control.
+Commit your changes with something like:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>git commit -am <span class="s1">&#39;Creates initial gem skeleton&#39;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Now all that&rsquo;s left is to add our remote Github repository to our local
+git remotes as <code>origin</code> and push our code so that it is safely in the
+cloud.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>git remote add origin
+</span><span class='line'>git@github.com:michaelkelly322/sidekiq-workflow.git
+</span><span class='line'>git push origin master
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>We now have an open source gem ready to start development up on Github.
+Take a look at the actual <a href="https://github.com/michaelkelly322/sidekiq-workflow">sidekiq-workflow repository</a>! Now
+let&rsquo;s work on making it available to developers around the world.</p>
+
+<p><a name="rubygems"></a></p>
+
+<h3>Deploying the Gem to RubyGems</h3>
+
+<p>Luckily, the nice folks over at <a href="http://rubygems.org">RubyGems</a> have
+made the process of making a gem publically available to anyone with a
+<code>Gemfile</code> and half a mind to type <code>gem 'sidekiq-workflow'</code> <em>EXTREMELY</em>
+easy. It is a two step process that includes building the gem and
+deploying the gem to RubyGems' servers.</p>
+
+<p>Building the gem is a simple as running the following command:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>gem build sidekiq-workflow.gemspec
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>This will build our modules into our gem based on the gemspec and saved
+it to a <code>.gem</code> file. The output should be something like if everything
+went according to plan:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>  Successfully built RubyGem
+</span><span class='line'>  Name: sidekiq-workflow
+</span><span class='line'>  Version: 0.0.1
+</span><span class='line'>  File: sidekiq-workflow-0.0.1.gem
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>The final step is to deploy our gem. This step is a bit hairy so bare
+with me. We have to first setup an account over at
+<a href="http://rubygems.org">RubyGems</a> and download our credentials file. Once
+you&rsquo;ve got an account created, use the following in a terminal to setup
+your credentials:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>curl -u thebadmonkeydev https://rubygems.org/api/v1/api_key.yaml
+</span><span class='line'>&lt; ~/.gem/credentials<span class="p">;</span> chmod <span class="m">0600</span> ~/.gem/credentials
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>you&rsquo;ll be prompted for your password and once entered, your credentials
+will be setup in your <code>~/.gem</code> folder. Now that we&rsquo;re all super
+authenticated and what not we can push our new gem out to the world
+using this simple command (notice that the file name is the same as the
+one produced by the build command above):</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>gem push sidekiq-workflow-0.0.1.gem
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>You should see <code>Successfully registered gem: sidekiq-workflow (0.0.1)</code>
+if everything was successful. You can now visit your dashboard on
+RubyGems to see your gem. Head on over to the <a href="https://rubygems.org/gems/sidekiq-workflow">sidekiq-workflow gem site</a> to see the actual
+sidekiq-workflow.</p>
+
+<p><a name="conclusion"></a></p>
+
+<h3>Conclusion</h3>
+
+<p>So what have we accomplished here? We now have a basic gem skeleton, in
+source control, and with a deployment procedure in place. Basically, we
+have everything we need to start actually developing this gem. Next time
+we&rsquo;ll talk about what it is that we&rsquo;re actually building and start
+putting together the first bits of functionality.</p>
+
+<p>Also, if you notice any errors/omissions or have any questions feel free
+to comment below and I&rsquo;ll reply back as soon as I possibly can.</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[How to Build Your Own Rails Gem: Start to Finish]]></title>
+    <link href="http://blog.badmonkeys.io/blog/2015/06/04/how-to-build-your-own-rails-gem/"/>
+    <updated>2015-06-04T00:00:00-04:00</updated>
+    <id>http://blog.badmonkeys.io/blog/2015/06/04/how-to-build-your-own-rails-gem</id>
+    <content type="html"><![CDATA[<p>Introduces why we&rsquo;d want to create a Rails Gem and begins a step-by-step
+guide to developing an actual open source Gem.</p>
+
+<!-- more -->
+
+
+<h2>Why build a gem?</h2>
+
+<p>So a couple of months ago I wrote a batch workflow manager for BLiNQ&rsquo;s
+SMB Solo product.  The point here was that we had a large volume of
+background operations to perform when we launched an account.  We did
+all these batch operations using <a href="http://sidekiq.org/">Sidekiq</a> and
+<a href="http://redis.io/">Redis</a>.  Some could be paralleled, and some depended
+on previous batches to complete.  We couldn&rsquo;t break these down into
+large sequential jobs within a single batch because we work with the
+Facebook API&hellip;not the most reliable partner ever, so we needed to be
+smart about retries.</p>
+
+<p>It also allowed us to execute workflows like this using a definition of
+sorts and made it possible to define the workflows at run-time.  I
+thought this was just an edge case in my niche, but I talked a bit about
+the code to other teams and they seemed really interested.  I set out to
+make a gem so they could use it over on their products.  The
+functionality is easily generalized and the added level of abstraction
+needed to model workflows like these is valuable.</p>
+
+<p><img src="https://lh4.googleusercontent.com/A9DsdHvVON8hgSB4XkEWDvcV_8UPz79Hd7qUp2_HxzC2M2WxtjCF-YWpbpqIKqHaXDYhFWyBmbkzyddg-QyHL1RBGUFoXJ72uiVehNzpsRQzz66NKyvBviLa" alt="complex-workflows" /></p>
+
+<p>So I started by following the guides over at
+<a href="http://guides.rubygems.org/make-your-own-gem/">RubyGems</a> and pushed an
+empty module up to my <a href="https://rubygems.org/profiles/thebadmonkeydev">RubyGems
+Profile</a>.  If you go to
+my profile you can see that I&rsquo;ve screwed around with the verioning
+pattern and some basic tests and shell methods over the last month, but
+not much else.  There&rsquo;s still no real functionality.However, since May
+18th, it&rsquo;s been downloaded more than 250 times!!</p>
+
+<h2>Why build a gem out in public like this?</h2>
+
+<p>Since I was already planning a tutorial post about creating a new rails
+gem, I decided that since there is obviously demand for this kind of
+functionality, why not build it publicly and let people learn from a gem
+that is actually useful versus the whole &ldquo;Hello World&rdquo; approach of
+online guides.</p>
+
+<p>Most of us learn by doing and it can be difficult to get off the ground
+with a new topic if you don&rsquo;t have the opportunity to work on something
+that&rsquo;s not trivial.  In response to these far-too-simple guides around
+the interwebz, I&rsquo;m going to build this gem step by step here on my blog
+so that you can build actual experience with gem development.  I only
+ask that if you do follow along and push your gem out, please change the
+name so there&rsquo;s no confusion with mine as I plan to continue maintaining
+it after this tutorial is over.</p>
+
+<h2>So&hellip;</h2>
+
+<p>Over the next several weeks I&rsquo;m going to discuss in depth my experience
+developing this gem, which I will be calling &lsquo;sidekiq-workflow&rsquo;.  We&rsquo;ll
+walk through the process of creating the initial gem itself to the final
+touches implementing actual workflow functionality together.  I will be
+loosely following a <a href="http://en.wikipedia.org/wiki/Test-driven_development">Test-Driven Development
+(TDD)</a> approach.
+ However, I will be developing this in a rapid time frame and will
+certainly stray from TDD in the strictest sense&hellip;you should get a feel
+for how I develop day-to-day.  I try to strike a balance between
+following a strict uniform process and the real-world down and dirty
+approach that we all use but don&rsquo;t talk about.</p>
+
+<p>I&rsquo;m also going to be using some very popular tools for open source
+projects along the way and will walk through setting them up for
+sidekiq-workflow:
+<a href="https://github.com">Github</a>
+<a href="https://travis-ci.org">TravisCI</a>
+<a href="https://codeclimate.com">CodeClimate</a></p>
+
+<table>
+<tbody>
+<tr>
+<th>Let's Get Started</th>
+</tr>
+<tr>
+<td><a
+href="https://badmonkeydev.wordpress.com/2015/06/09/how-to-build-your-own-rails-gem-part-1/">Creating
+a Basic Gem and Setting Up Github</a>
+</td>
+</tr>
+<tr>
+<td>What we're building and first tests <small
+style="float:right;">Coming Soon</small></td>
+</tr>
+<tr>
+<td>Core Features and Using CodeClimate <small
+style="float:right;">Coming Soon</small></td>
+</tr>
+<tr>
+<td>Finishing Touches and Publishing a Github Release <small
+style="float:right;">Coming Soon</small></td>
+</tr>
+</tbody>
+</table>
+
+
+
 ]]></content>
   </entry>
   
