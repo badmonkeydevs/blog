@@ -1,0 +1,33 @@
+.header-bar
+  %nav{role: 'navigation', class: 'navbar navbar-inverse navbar-fixed-top'}
+    .container
+      .navbar-header
+        %button{type: 'button', 'data-target': '#navbarCollapse', 'data-toggle': 'collapse', class: 'navbar-toggle'}
+          %span.sr-only
+            Toggle navigation
+          %span.icon-bar
+          %span.icon-bar
+          %span.icon-bar
+        %a{href: '/', class: 'navbar-brand'}
+          BadMonkeys
+      #navbarCollapse.collapse.navbar-collapse
+        %ul.nav.navbar-nav
+          %li
+            %a
+              Dashboard
+
+        %ul.nav.navbar-nav.navbar-right
+          %li
+            %a
+              What We Do
+          %li
+            %a
+              Who We Are
+          %li
+            %a
+              Products
+          %li
+            %a
+              Blog
+
+
