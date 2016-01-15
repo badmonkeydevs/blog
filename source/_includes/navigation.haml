@@ -1,5 +1,5 @@
 .header-bar
-  %nav{role: 'navigation', class: 'navbar'}
+  %nav{role: 'navigation', class: 'navbar navbar-fixed-top'}
     .container
       .navbar-header
         %button{type: 'button', 'data-target': '#navbarCollapse', 'data-toggle': 'collapse', class: 'navbar-toggle'}
@@ -17,13 +17,13 @@
         %ul.nav.navbar-nav.navbar-right
           //right nav
           %li
-            %a
+            %a{ href: '#what-i-do' }
               What I Do
           %li
-            %a
+            %a{ href: '#who-i-am' }
               Who I Am
           %li
-            %a
+            %a{ href: '#projects' }
               Projects
           %li
             %a{ href: '/blog' }

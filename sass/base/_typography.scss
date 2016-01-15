@@ -20,3 +20,7 @@ body {
   color: $text-color;
   @extend .sans;
 }
+
+.full-pane > h1 {
+  @extend .text-uppercase;
+}

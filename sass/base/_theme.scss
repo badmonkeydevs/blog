@@ -4,12 +4,12 @@ $badmonkey-green: #21b827;
 
 // Main Link Colors
 $link-color: lighten(#777, 3) !default;
-$link-color-hover: adjust-color($link-color, $lightness: 10, $saturation: 25) !default;
+$link-color-hover: $link-color !default;//adjust-color($link-color, $lightness: 10, $saturation: 25) !default;
 $link-color-visited: $link-color !default;//adjust-color($link-color, $hue: 80, $lightness: -4) !default;
-$link-color-active: adjust-color($link-color-hover, $lightness: -15) !default;
+$link-color-active: $link-color !default;//adjust-color($link-color-hover, $lightness: -15) !default;
 
 // Main Section Colors
-$main-bg: #f8f8f8 !default;
+$main-bg: #6F256F !default;
 $page-bg: #252525 !default;
 $article-border: #eeeeee !default;
 
@@ -23,7 +23,7 @@ $text-color-light: #6F256F !default;
 $type-border: #ddd !default;
 
 /* Navigation */
-$nav-bg: transparent !default;
+$nav-bg: $page-bg !default;
 $nav-bg-front: image-url('noise.png') !default;
 $nav-bg-back: linear-gradient(lighten($nav-bg, 8), $nav-bg, darken($nav-bg, 11)) !default;
 $nav-color: darken($nav-bg, 38) !default;
@@ -57,17 +57,18 @@ body {
 }
 
 .navbar {
-  background-color: $nav-bg;
+  background: $nav-bg image-url('noise.png') top left;
   border: none !important;
 }
 
 .nav > li > a {
   @include link-colors($link-color, $hover: $link-color-hover, $focus: $link-color-hover, $visited: $link-color-visited, $active: $link-color-active);
   @include transition(color .3s);
+  background-color: transparent;
 }
 
 .nav > li > a:hover, .nav > li > a:focus {
-  background-color: $nav-bg !Important;
+  background-color: transparent !Important;
 }
 
 .nav > li {
@@ -102,8 +103,13 @@ body {
   //background-position: center center;
 }
 
-.see-thru {
-  background-color: transparent;
+.contrast {
+  background: $main-bg image-url('noise.png') top left;
+  color: #222;
+}
+
+.dark {
+  background: $page-bg image-url('noise.png') top left;
 }
 
 .stand-out {
@@ -111,3 +117,4 @@ body {
   font-weight: bolder;
   color: $badmonkey-green;
 }
+
