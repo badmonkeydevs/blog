@@ -1,10 +1,11 @@
 $noise-bg: image-url('noise.png') top left !default;
 $img-border: inline-image('dotted-border.png') !default;
+$badmonkey-green: #21b827;
 
 // Main Link Colors
-$link-color: lighten(#165b94, 3) !default;
+$link-color: lighten(#777, 3) !default;
 $link-color-hover: adjust-color($link-color, $lightness: 10, $saturation: 25) !default;
-$link-color-visited: adjust-color($link-color, $hue: 80, $lightness: -4) !default;
+$link-color-visited: $link-color !default;//adjust-color($link-color, $hue: 80, $lightness: -4) !default;
 $link-color-active: adjust-color($link-color-hover, $lightness: -15) !default;
 
 // Main Section Colors
@@ -17,12 +18,12 @@ $header-border: lighten($header-bg, 15) !default;
 $title-color: #f2f2f2 !default;
 $subtitle-color: #aaa !default;
 
-$text-color: #530E53 !default;
+$text-color: #777 !default;
 $text-color-light: #6F256F !default;
 $type-border: #ddd !default;
 
 /* Navigation */
-$nav-bg: #ccc !default;
+$nav-bg: transparent !default;
 $nav-bg-front: image-url('noise.png') !default;
 $nav-bg-back: linear-gradient(lighten($nav-bg, 8), $nav-bg, darken($nav-bg, 11)) !default;
 $nav-color: darken($nav-bg, 38) !default;
@@ -48,15 +49,65 @@ $page-border-bottom: darken($footer-bg, 5) !default;
 
 
 /* Core theme application */
-a {
-  @include link-colors($link-color, $hover: $link-color-hover, $focus: $link-color-hover, $visited: $link-color-visited, $active: $link-color-active);
-}
-a {
-  @include transition(color .3s);
-}
 
 html {
   background: $page-bg image-url('line-tile.png') top left;
 }
 body {
+}
+
+.navbar {
+  background-color: $nav-bg;
+  border: none !important;
+}
+
+.nav > li > a {
+  @include link-colors($link-color, $hover: $link-color-hover, $focus: $link-color-hover, $visited: $link-color-visited, $active: $link-color-active);
+  @include transition(color .3s);
+}
+
+.nav > li > a:hover, .nav > li > a:focus {
+  background-color: $nav-bg !Important;
+}
+
+.nav > li {
+  //border-left: 1px $link-color solid;
+  //border-bottom: 1px $link-color solid;
+  margin-right: 50px;
+
+  background-size: 200% 100%;
+  background-image: linear-gradient(to left, transparent, transparent 50%, $badmonkey-green 50%, $badmonkey-green);
+  background-position: 100% 0;
+
+  transition: all .25s linear;
+
+  &:hover{
+    background-position: 0 0;
+
+    a {
+      color: $page-bg;
+    }
+  }
+}
+
+.icon-bar {
+  background-color: $link-color;
+}
+
+.bg-logo {
+  background: $page-bg image-url('noise.png') top left;
+  //background-image: image-url('noise.png');
+
+  //background-size: cover;
+  //background-position: center center;
+}
+
+.see-thru {
+  background-color: transparent;
+}
+
+.stand-out {
+  @extend .text-uppercase;
+  font-weight: bolder;
+  color: $badmonkey-green;
 }

@@ -1,5 +1,5 @@
 .header-bar
-  %nav{role: 'navigation', class: 'navbar navbar-inverse navbar-fixed-top'}
+  %nav{role: 'navigation', class: 'navbar'}
     .container
       .navbar-header
         %button{type: 'button', 'data-target': '#navbarCollapse', 'data-toggle': 'collapse', class: 'navbar-toggle'}
@@ -12,22 +12,21 @@
           BadMonkeys
       #navbarCollapse.collapse.navbar-collapse
         %ul.nav.navbar-nav
-          %li
-            %a
-              Dashboard
+        //left nav
 
         %ul.nav.navbar-nav.navbar-right
+          //right nav
           %li
             %a
-              What We Do
+              What I Do
           %li
             %a
-              Who We Are
+              Who I Am
           %li
             %a
-              Products
+              Projects
           %li
-            %a
+            %a{ href: '/blog' }
               Blog
 
 

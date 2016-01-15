@@ -2,6 +2,8 @@ $header-font-size: 1em !default;
 $header-padding-top: 1.5em !default;
 $header-padding-bottom: 1.5em !default;
 
+$pane-height: 90vh;
+
 .group { @include pie-clearfix; }
 
 body {
@@ -9,5 +11,20 @@ body {
 }
 
 #outlet {
+  margin-top: -70px;
 }
 
+.full-pane {
+  width: 100vw;
+  height: $pane-height;
+  display: table;
+  vertical-align: middle;
+}
+
+.v-centered {
+  height: 100%;
+  width: 100%;
+  display: table-cell;
+  text-align: center;
+  vertical-align: middle;
+}
