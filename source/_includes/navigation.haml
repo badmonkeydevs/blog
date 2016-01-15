@@ -1,0 +1,32 @@
+.header-bar
+  %nav{role: 'navigation', class: 'navbar navbar-fixed-top'}
+    .container
+      .navbar-header
+        %button{type: 'button', 'data-target': '#navbarCollapse', 'data-toggle': 'collapse', class: 'navbar-toggle'}
+          %span.sr-only
+            Toggle navigation
+          %span.icon-bar
+          %span.icon-bar
+          %span.icon-bar
+        %a{href: '/', class: 'navbar-brand'}
+          BadMonkeys
+      #navbarCollapse.collapse.navbar-collapse
+        %ul.nav.navbar-nav
+        //left nav
+
+        %ul.nav.navbar-nav.navbar-right
+          //right nav
+          %li
+            %a{ href: '#what-i-do' }
+              What I Do
+          %li
+            %a{ href: '#who-i-am' }
+              Who I Am
+          %li
+            %a{ href: '#projects' }
+              Projects
+          %li
+            %a{ href: '/blog' }
+              Blog
+
+
