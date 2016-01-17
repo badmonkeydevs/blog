@@ -1,8 +1,8 @@
 $blockquote: $type-border !default;
-$sans: "Quicksand", "Helvetica Neue", Arial, sans-serif !default;
-$serif: "Quicksand", Georgia, Times, "Times New Roman", serif !default;
+$sans: "Raleway", "Helvetica Neue", Arial, sans-serif !default;
+$serif: "Raleway", Georgia, Times, "Times New Roman", serif !default;
 $mono: Menlo, Monaco, "Andale Mono", "lucida console", "Courier New", monospace !default;
-$heading-font-family: "Quicksand", "Georgia", "Helvetica Neue", Arial, sans-serif !default;
+$heading-font-family: "Raleway", "Georgia", "Helvetica Neue", Arial, sans-serif !default;
 $header-title-font-family: $heading-font-family !default;
 $header-subtitle-font-family: $heading-font-family !default;
 
@@ -11,7 +11,7 @@ $header-subtitle-font-family: $heading-font-family !default;
   font-family: $heading-font-family;
 }
 
-.sans { font-family: $sans; }
+.sans { font-family: $sans !important; }
 .serif { font-family: $serif; }
 .mono { font-family: $mono; }
 
@@ -23,14 +23,16 @@ body {
 
 .full-pane > h1 {
   @extend .text-uppercase;
+  @extend .sans;
 }
 
 .full-pane  p {
   font-size: 20px !important;
+  @extend .sans;
 }
 
 .attribute p {
-  text-align: justify;
+  letter-spacing: 2px;
 }
 
 .stand-out {
