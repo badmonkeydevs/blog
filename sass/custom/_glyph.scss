@@ -12,29 +12,34 @@
 .chevron:before {
   content: '';
   position: absolute;
-  top: 0;
+  top: -10px;
   left: 0;
-  height: 10%;
+  height: 5%;
   width: 51%;
   background: $badmonkey-green;
-  -webkit-transform: skew(0deg, 30deg);
-  -moz-transform: skew(0deg, 30deg);
-  -ms-transform: skew(0deg, 30deg);
-  -o-transform: skew(0deg, 30deg);
-  transform: skew(0deg, 30deg);
+  -webkit-transform: skew(0deg, 45deg);
+  -moz-transform: skew(0deg, 45deg);
+  -ms-transform: skew(0deg, 45deg);
+  -o-transform: skew(0deg, 45deg);
+  transform: skew(0deg, 45deg);
 }
 .chevron:after {
   content: '';
   position: absolute;
-  top: 0;
+  top: -10px;
   right: 0;
-  height: 10%;
+  height: 5%;
   width: 50%;
   background: $badmonkey-green;
-  -webkit-transform: skew(0deg, -30deg);
-  -moz-transform: skew(0deg, -30deg);
-  -ms-transform: skew(0deg, -30deg);
-  -o-transform: skew(0deg, -30deg);
-  transform: skew(0deg, -30deg);
+  -webkit-transform: skew(0deg, -45deg);
+  -moz-transform: skew(0deg, -45deg);
+  -ms-transform: skew(0deg, -45deg);
+  -o-transform: skew(0deg, -45deg);
+  transform: skew(0deg, -45deg);
 }
 
+.bullet:after {
+  color: $badmonkey-green;
+  content: "•";
+  padding-right: 10px;
+}

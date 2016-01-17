@@ -1,0 +1,24 @@
+textarea {
+  resize: none;
+}
+
+button.btn {
+  display: block;
+  margin: 0 auto;
+  margin-top: 2em;
+}
+
+input.form-control.tall {
+  height: 2.4em;
+  margin-bottom: 1.4em;
+}
+
+textarea.form-control.tall {
+  margin-bottom: 1.4em;
+}
+
+.form-wrap {
+  display: block;
+  margin: 0 auto;
+  max-width: 400px;
+}

@@ -1,6 +1,7 @@
 $noise-bg: image-url('noise.png') top left !default;
 $img-border: inline-image('dotted-border.png') !default;
 $badmonkey-green: #21b827;
+$badmonkey-dark-green: #136c17;
 
 // Main Link Colors
 $link-color: lighten(#777, 3) !default;
@@ -9,7 +10,7 @@ $link-color-visited: $link-color !default;//adjust-color($link-color, $hue: 80, 
 $link-color-active: $link-color !default;//adjust-color($link-color-hover, $lightness: -15) !default;
 
 // Main Section Colors
-$main-bg: #6F256F !default;
+$main-bg: #862d86 !default;
 $page-bg: #252525 !default;
 $article-border: #eeeeee !default;
 
@@ -18,8 +19,8 @@ $header-border: lighten($header-bg, 15) !default;
 $title-color: #f2f2f2 !default;
 $subtitle-color: #aaa !default;
 
-$text-color: #777 !default;
-$text-color-light: #6F256F !default;
+$text-color: #999 !default;
+$text-color-light: #862d86 !default;
 $type-border: #ddd !default;
 
 /* Navigation */
@@ -72,9 +73,8 @@ body {
 }
 
 .nav > li {
-  //border-left: 1px $link-color solid;
-  //border-bottom: 1px $link-color solid;
   margin-right: 50px;
+  border-radius: 5px;
 
   background-size: 200% 100%;
   background-image: linear-gradient(to left, transparent, transparent 50%, $badmonkey-green 50%, $badmonkey-green);
@@ -109,12 +109,9 @@ body {
 }
 
 .dark {
-  background: $page-bg image-url('noise.png') top left;
+  background: $page-bg;
 }
 
-.stand-out {
-  @extend .text-uppercase;
-  font-weight: bolder;
-  color: $badmonkey-green;
+.splash {
+  background: $page-bg;
 }
-

@@ -2,7 +2,7 @@ $header-font-size: 1em !default;
 $header-padding-top: 1.5em !default;
 $header-padding-bottom: 1.5em !default;
 
-$pane-height: 95vh;
+$pane-height: auto;
 
 .group { @include pie-clearfix; }
 
@@ -22,12 +22,21 @@ body {
   padding: 30px;
 }
 
+.splash {
+  height: 95vh;
+}
+
 .v-centered {
   height: 100%;
   width: 100%;
   display: table-cell;
   text-align: center;
   vertical-align: middle;
+
+  h1 {
+    font-size: 40px;
+    line-height: 2em;
+  }
 }
 
 .pane-break {
@@ -40,3 +49,20 @@ body {
   top: -50px;
 }
 
+.nav > li {
+  margin-right: 30px;
+}
+
+.attribute-wrap {
+  padding-top: 20px;
+}
+
+.attribute {
+  @extend .col-xs-12;
+  @extend .col-md-4;
+  padding: 25px;
+
+  p {
+    padding: 15px;
+  }
+}

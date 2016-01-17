@@ -24,3 +24,22 @@ body {
 .full-pane > h1 {
   @extend .text-uppercase;
 }
+
+.full-pane  p {
+  font-size: 20px !important;
+}
+
+.attribute p {
+  text-align: justify;
+}
+
+.stand-out {
+  font-weight: bolder;
+  color: $badmonkey-green;
+}
+
+.call-out {
+  @extend .stand-out;
+  @extend .text-uppercase;
+  letter-spacing: 5px;
+}

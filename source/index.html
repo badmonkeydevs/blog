@@ -6,11 +6,10 @@ comments: true
 sharing: true
 footer: true
 ---
-<div class='full-pane bg-logo'>
+<div class='full-pane splash'>
   <div class='v-centered'>
-    <h1>We are the Bad Monkeys</h1>
-    <h1>We build your web <span class='stand-out'>ideas</span></h1>
-    <h1>Curious, Determined, Effective</br></h1>
+    <h1>I am the <span class='stand-out'>Bad Monkey</span> Developer</h1>
+    <h1>Let's build something <span class='stand-out'>#innovative</span> together.</h1>
   </div>
 </div>
 
@@ -19,7 +18,7 @@ footer: true
 </div>
 <a class='scroll-to' id='what-i-do'></a>
 <div class='full-pane contrast'>
-  <h1 align='center'>What I Do</h1>
+  {% convert_include attributes.haml %}
 </div>
 
 <a class='scroll-to' id='who-i-am'></a>
@@ -27,7 +26,9 @@ footer: true
   <h1 align='center'>Who I Am</h1>
 </div>
 
-<a class='scroll-to' id='projects'></a>
+<a class='scroll-to' id='hire-me'></a>
 <div class='full-pane contrast'>
-  <h1 align='center'>Projects</h1>
+  <h1 align='center'>Contact Me</h1>
+  {% include contact_form.html %}
+  <!-- put 'trusted by' here -->
 </div>
