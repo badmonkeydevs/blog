@@ -1,34 +1,35 @@
 <div class='form-wrap'>
-  <form>
+  <form action="http://formspree.io/michaelkelly322@gmail.com" method="post" target="_blank">
     <div class='form-group'>
       <label for='name' class='sr-only'>Name</label>
-      <input type='text' class='form-control tall' placeholder='What is your Name?'>
+      <input type='text' name="NAME" class='form-control tall' placeholder='What is your Name?'>
     </div>
 
     <div class='form-group'>
       <label for='email' class='sr-only'>Email</label>
-      <input type='email' class='form-control tall' placeholder='What is your Email?'>
+      <input type='email' name="EMAIL" class='form-control tall' placeholder='What is your Email?' required>
     </div>
 
     <div class='form-group'>
       <label for='phone' class='sr-only'>Phone Number</label>
-      <input type='phone' class='form-control tall' placeholder='What is your Phone Number?'>
+      <input type='phone' name="PHONE" class='form-control tall' placeholder='What is your Phone Number?'>
     </div>
 
     <div class='form-group'>
       <label for='project' class='sr-only'>Project</label>
-      <textarea rows='6' class='form-control tall' placeholder='What do you need Help with?'></textarea>
+      <textarea rows='6' name="PROJECT" class='form-control tall' placeholder='What do you need Help with?' required></textarea>
     </div>
 
     <div class='form-group'>
       <label for='budget' class='sr-only'>Budget</label>
-      <input type='text' class='form-control tall' placeholder='What is your Budget?'>
+      <input type='text' name="BUDGET" class='form-control tall' placeholder='What is your Budget?' required>
     </div>
 
     <div class='form-group'>
       <label for='found_me' class='sr-only'>How Did You Find Me</label>
-      <input type='text' class='form-control tall' placeholder='How did you hear about my Services?'>
+      <input type='text' name="FOUND_ME" class='form-control tall' placeholder='How did you hear about my Services?'>
     </div>
+    <div style="position: absolute; left: -5000px;" aria-hidden="true"><input type="text" name="b_b68b46570257294fc3e7d8f6f_1effc5b323" tabindex="-1" value=""></div>
     <button type='submit' class='btn btn-default'>Submit</button>
   </form>
 </div>
