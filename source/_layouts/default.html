@@ -3,8 +3,8 @@
 {% capture root_url %}{{ site.root | strip_slash }}{% endcapture %}
 {% include head.html %}
 <body>
-  <nav role="navigation">{% convert_include navigation.haml %}</nav>
-  <div id='outlet'>
+  <nav role="navigation">{% convert_include landing-navigation.haml %}</nav>
+  <div class="default" id='outlet'>
     {{ content | expand_urls: root_url }}
   </div>
 </body>

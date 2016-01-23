@@ -8,27 +8,28 @@ footer: true
 ---
 <div class='full-pane splash'>
   <div class='v-centered'>
-    <h1>I am the <span class='stand-out'>Bad Monkey</span> Developer</h1>
-    <h1>Let's build something <span class='stand-out'>#innovative</span> together.</h1>
+    <p class="lead">We are the <span class='stand-out'>Bad Monkeys</span></p>
+    <p class="lead">Let's build something <span class='stand-out'>#innovative</span> together.</p>
   </div>
 </div>
 
 <div class='pane-break'>
   <span class='chevron'></span>
 </div>
-<a class='scroll-to' id='what-i-do'></a>
+
+<a class='scroll-to' id='what-we-do'></a>
 <div class='full-pane contrast'>
-  {% convert_include attributes.haml %}
+  {% convert_include what-we-do.haml %}
 </div>
 
-<a class='scroll-to' id='who-i-am'></a>
+<a class='scroll-to' id='our-process'></a>
 <div class='full-pane dark'>
-  <h1 align='center'>Who I Am</h1>
+  <h1 align='center'>Our Process</h1>
 </div>
 
-<a class='scroll-to' id='hire-me'></a>
 <div class='full-pane contrast'>
-  <h1 align='center'>Contact Me</h1>
-  {% include contact_form.html %}
-  <!-- put 'trusted by' here -->
+  <h1 align='center'>Tools of the Trade</h1>
+  <!-- series of link icons from the tools we use
+    ruby, rails, vim, Travis, coffeescript, bootstrap, sidekiq, ember, JavaScript, Heroku, 
+  -->
 </div>

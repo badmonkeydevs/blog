@@ -55,14 +55,17 @@ body {
 
 .attribute-wrap {
   padding-top: 20px;
+
+  .attribute {
+    @extend .col-xs-12;
+    @extend .col-sm-6;
+
+    p {
+      text-align: justify;
+    }
+  }
 }
 
-.attribute {
-  @extend .col-xs-12;
-  @extend .col-md-4;
-  padding: 25px;
-
-  p {
-    padding: 15px;
-  }
+.page {
+  padding-top: 50px;
 }
