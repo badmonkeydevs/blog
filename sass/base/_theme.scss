@@ -114,3 +114,8 @@ body {
 .splash {
   background: $page-bg;
 }
+
+.btn-badmonkey {
+  @extend .text-capitalize;
+  color: $page-bg !important;
+}

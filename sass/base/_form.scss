@@ -22,3 +22,15 @@ textarea.form-control.tall {
   margin: 0 auto;
   max-width: 400px;
 }
+
+a.btn-badmonkey {
+  @extend .btn-primary;
+  background-color: $badmonkey-green !important;
+  line-height: inherit !important;
+  border: none !important;
+
+  &:hover {
+    color: black !important;
+    background-color: darken($badmonkey-green, 10%) !important;
+  }
+}

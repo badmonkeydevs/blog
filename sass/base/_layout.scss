@@ -33,9 +33,12 @@ body {
   text-align: center;
   vertical-align: middle;
 
-  h1 {
-    font-size: 40px;
-    line-height: 2em;
+  &.top {
+    vertical-align: top;
+  }
+
+  &.bottom {
+    vertical-align: bottom;
   }
 }
 
@@ -68,4 +71,8 @@ body {
 
 .page {
   padding-top: 50px;
+}
+
+.bottom {
+  margin-top: 3em;
 }
