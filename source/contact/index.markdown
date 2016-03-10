@@ -7,5 +7,6 @@ sharing: true
 footer: true
 ---
 <div class='full-pane splash'>
+  <h1 class='stand-out' align='center'>Tell me about your project</h1>
   {% include contact_form.html %}
 </div>
