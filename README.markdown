@@ -1,4 +1,5 @@
-foo## Octopress 3.0
+added from command line
+## Octopress 3.0
 
 Note: Octopress 3.0 is in development at https://github.com/octopress/octopress
 
