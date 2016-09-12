@@ -1,5 +1,7 @@
 # Octopress Changelog
 
+STUFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFf
+and some other things all together new
 ## 2.0
 
 - Now based on [mojombo/jekyll](http://github.com/mojombo/jekyll)
